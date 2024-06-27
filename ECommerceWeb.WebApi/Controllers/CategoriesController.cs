@@ -1,4 +1,6 @@
 ﻿
+using ECommerceWeb.Dto.Request;
+using ECommerceWeb.Entities;
 using ECommerceWeb.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,36 +39,38 @@ namespace ECommerceWeb.WebApi.Controllers
             return Ok(entity);
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Post(CategoriaDtoRequest request)
-        //{
-        //    var categoria = new Categoria
-        //    {
-        //        Nombre = request.Nombre,
-        //        Descripcion = request.Descripcion
-        //    };
+       
 
-        //    var id = await _repository.AddAsync(categoria);
+        [HttpPost]
+        public async Task<IActionResult> Post(CategoryDtoRequest request)
+        {
+            var category = new Category
+            {
+                Name = request.Name,
+                Description = request.Description
+            };
 
-        //    return CreatedAtAction(nameof(Get), new { id }, categoria);
-        //}
+            var id = await _repository.AddAsync(category);
 
-        //[HttpPut("{id:int}")]
-        //public async Task<IActionResult> Put(int id, CategoriaDtoRequest request)
-        //{
-        //    var entity = await _repository.FindByIdAsync(id);
-        //    if (entity is null)
-        //    {
-        //        return NotFound();
-        //    }
+            return CreatedAtAction(nameof(Get), new { id }, category);
+        }
 
-        //    entity.Nombre = request.Nombre;
-        //    entity.Descripcion = request.Descripcion;
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Put(int id, CategoryDtoRequest request)
+        {
+            var entity = await _repository.FindByIdAsync(id);
+            if (entity is null)
+            {
+                return NotFound();
+            }
 
-        //    await _repository.UpdateAsync();
+            entity.Name = request.Name;
+            entity.Description = request.Description;
 
-        //    return Ok();
-        //}
+            await _repository.UpdateAsync();
+
+            return Ok();
+        }
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
@@ -75,5 +79,7 @@ namespace ECommerceWeb.WebApi.Controllers
 
             return Ok();
         }
+
+
     }
 }

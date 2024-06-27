@@ -1,0 +1,47 @@
+﻿
+<PageTitle>@pageTitleParam</PageTitle>
+<h3 class="text-uppercase mb-2 mt-1">@pageTitleParam</h3>
+
+<EditForm Model="categoryDtoRequest" OnSubmit="@onBtnSubmit">
+    <div class="row">
+        <div class="col-3">
+            <div class="mb-3">
+                <label for="Category" class="form-label">Category</label>
+                <input type="text" class="form-control" id="CategoryID" placeholder="Name Category" @bind-value="categoryDtoRequest.Name">
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3">
+            <div class="mb-3">
+                <label for="Description" class="form-label">Description</label>
+                <input type="text" class="form-control" id="DecriptionID" placeholder="Desc Category" @bind-value="categoryDtoRequest.Description">
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-5">
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">@nameBtnFormSubmit</button>
+            </div>
+        </div>
+    </div>
+
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public CategoryDtoRequest categoryDtoRequest { get; set; } = new();
+    [Parameter]
+    public string pageTitleParam { get; set; } = "title loading...";
+    [Parameter]
+    public string nameBtnFormSubmit { get; set; } = "name loading...";
+    [Parameter]
+    public EventCallback onBtnSubmit { get; set; }
+
+
+
+}

@@ -30,7 +30,7 @@ namespace ECommerceWeb.Repositories.Implementaciones
                 .Where(predicate)
                 .AsQueryable()
                 .AsNoTracking()
-                .ToListAsync();
+                .ToListAsync(); 
 
             return collection;
         }
@@ -43,7 +43,7 @@ namespace ECommerceWeb.Repositories.Implementaciones
 
         public async Task<int> AddAsync(TEntity entity)
         {
-            await Context.Set<TEntity>().AddAsync(entity); // this linetry to add to the collection of the DbSet
+            await Context.Set<TEntity>().AddAsync(entity); // this line try to add to the collection of the DbSet
             await Context.SaveChangesAsync(); // this confirm the saving the record
 
             return entity.Id;
@@ -58,10 +58,10 @@ namespace ECommerceWeb.Repositories.Implementaciones
         {
            
             // we serching the id in the collection , this id is reciving like a param
-            var entidadExistente = await FindByIdAsync(id);
-            if (entidadExistente is not null)
+            var existentEntity = await FindByIdAsync(id);
+            if (existentEntity is not null)
             {
-                entidadExistente.state = false;
+                existentEntity.state = false;
                 await Context.SaveChangesAsync();
             }
         }

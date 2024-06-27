@@ -15,4 +15,12 @@
     <ProjectReference Include="..\ECommerceWeb.Dto\ECommerceWeb.Dto.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\JS_Utilities\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\JS_Utilities\Alerts.js" />
+  </ItemGroup>
+
 </Project>

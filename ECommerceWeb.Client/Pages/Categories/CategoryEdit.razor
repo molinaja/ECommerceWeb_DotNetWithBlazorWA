@@ -1,0 +1,64 @@
+﻿@page "/Categories/Edit/{Id:int}"
+
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager;
+@inject IJSRuntime iJSRuntime
+
+<CategoryEditComponent categoryDtoRequest="categoryDtoRequest"
+                       pageTitleParam="New Category"
+                       nameBtnFormSubmit="Update"
+                       onBtnSubmit="Update"></CategoryEditComponent>
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+
+    //public CategoryDtoRequest categoryDtoRequest  = new CategoryDtoRequest();
+    public CategoryDtoRequest categoryDtoRequest { get; set; } = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var res = await httpClient.GetFromJsonAsync<CategoryDtoRequest>($"api/categories/{Id}");
+        if (res != null)
+        {
+            categoryDtoRequest = res;
+        }
+    }
+
+    private async Task Update()
+    {
+
+        try
+        {
+            // call the api
+            HttpResponseMessage response = await httpClient.PutAsJsonAsync($"api/categories/{Id}", categoryDtoRequest);
+
+            // check if response is succesfull
+            response.EnsureSuccessStatusCode();
+
+            if (response.IsSuccessStatusCode)
+            {
+
+                navigationManager.NavigateTo("/Categories/list");
+            }
+
+        }
+        catch (HttpRequestException e)
+        {
+            // Maneja cualquier error de la solicitud HTTP aquí
+            Console.WriteLine($"Request error: {e.Message}");
+        }
+        catch (Exception e)
+        {
+            // Maneja cualquier otro tipo de error aquí
+            Console.WriteLine($"General error: {e.Message}");
+        }
+
+    }
+
+
+
+
+}
+

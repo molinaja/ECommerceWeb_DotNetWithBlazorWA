@@ -1,0 +1,65 @@
+﻿@page "/Categories/New"
+
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager;
+@inject IJSRuntime iJSRuntime
+
+<CategoryEditComponent categoryDtoRequest="categoryDtoRequest"
+                       pageTitleParam="New Category"
+                       nameBtnFormSubmit="Save"
+                       onBtnSubmit="Save"></CategoryEditComponent>
+
+@code {
+
+    //public CategoryDtoRequest categoryDtoRequest  = new CategoryDtoRequest();
+    public CategoryDtoRequest categoryDtoRequest { get; set; } = new();
+
+    private async Task Save()
+    {
+
+        try
+        {
+            // call the api
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync("api/categories", categoryDtoRequest);
+
+            // check if response is succesfull
+            response.EnsureSuccessStatusCode();
+
+            // read the content of respons like  a string
+            // string responseContentString = await response.Content.ReadAsStringAsync();
+            // Console.WriteLine("Response content: " + responseContentString);
+
+            // If you expect a JSON object in the response, you can deserialize it
+            var responseObject = await response.Content.ReadFromJsonAsync<CategoryDtoResponse>();
+
+            if (response.IsSuccessStatusCode)
+            {
+                if (responseObject != null)
+                {
+                    //Console.WriteLine("Response content OBJ: " + responseObject.Id.ToString());
+                    await iJSRuntime.InvokeVoidAsync("showSimpleAlert", "Category Created ID: " + responseObject.Id.ToString() + " with name: " + responseObject.Name);
+
+                }
+
+                navigationManager.NavigateTo("/Categories/list");
+            }
+            else
+            {
+                await iJSRuntime.InvokeVoidAsync("Failure to save the new category.");
+            }
+
+        }
+        catch (HttpRequestException e)
+        {
+            // Maneja cualquier error de la solicitud HTTP aquí
+            Console.WriteLine($"Request error: {e.Message}");
+        }
+        catch (Exception e)
+        {
+            // Maneja cualquier otro tipo de error aquí
+            Console.WriteLine($"General error: {e.Message}");
+        }
+
+    }
+
+}

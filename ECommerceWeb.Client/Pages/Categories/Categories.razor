@@ -1,0 +1,105 @@
+﻿@page "/Categories/list"
+@using ECommerceWeb.Dto.Response
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+<PageTitle>Categories</PageTitle>
+<h3>Categories</h3>
+
+<NavLink href="/Categories/New/" class="btn btn-success mb-2">New Category</NavLink>
+<hr />
+
+@if (categories is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table table-primary table-bordered">
+        <thead>
+            <tr class="table-primary">
+                <th>
+                    ID
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Controls
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in categories)
+            {
+                <tr class="table-secondary">
+                    <td>
+                        @category.Id
+                    </td>
+                    <td>
+                        @category.Name
+                    </td>
+                    <td>
+                        @category.Description
+                    </td>
+                    <td>
+                        <button class="btn btn-success" @onclick="() => edit(category.Id)">Edit</button>
+                        <button class="btn btn-danger" @onclick="() => delete(category.Id)">Delete</button>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    public ICollection<CategoryDtoResponse>? categories { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await httpClient.GetFromJsonAsync<ICollection<CategoryDtoResponse>>("api/categories");
+        //Console.WriteLine("My debug output.");
+
+    }
+
+    private void edit(int Id)
+    {
+        navigationManager.NavigateTo($"/Categories/Edit/{Id}");
+
+    }
+
+    private async Task delete(int Id)
+    {
+        try
+        {
+            // call the api
+            HttpResponseMessage response = await httpClient.DeleteAsync($"api/categories/{Id}");
+
+            // check if response is succesfull
+            response.EnsureSuccessStatusCode();
+            if (response.IsSuccessStatusCode)
+            {
+                categories = await httpClient.GetFromJsonAsync<ICollection<CategoryDtoResponse>>("api/categories");
+            }
+
+        }
+        catch (HttpRequestException e)
+        {
+            // Maneja cualquier error de la solicitud HTTP aquí
+            Console.WriteLine($"Request error: {e.Message}");
+        }
+        catch (Exception e)
+        {
+            // Maneja cualquier otro tipo de error aquí
+            Console.WriteLine($"General error: {e.Message}");
+        }
+    }
+
+
+
+}
