@@ -1,8 +1,10 @@
 ﻿@page "/Categories/Edit/{Id:int}"
+@using System.Text.Json
 
 @inject HttpClient httpClient
 @inject NavigationManager navigationManager;
 @inject IJSRuntime iJSRuntime
+@inject SweetAlertService Swal;
 
 <CategoryEditComponent categoryDtoRequest="categoryDtoRequest"
                        pageTitleParam="New Category"
@@ -28,11 +30,17 @@
 
     private async Task Update()
     {
-
+        string errorBodyFor400 = string.Empty;
         try
         {
             // call the api
             HttpResponseMessage response = await httpClient.PutAsJsonAsync($"api/categories/{Id}", categoryDtoRequest);
+
+            Console.WriteLine($"INFO Status Code= {(int)response.StatusCode}");
+            if ((int)response.StatusCode == 400)
+            {
+                errorBodyFor400 = await response.Content.ReadAsStringAsync();
+            }
 
             // check if response is succesfull
             response.EnsureSuccessStatusCode();
@@ -40,19 +48,47 @@
             if (response.IsSuccessStatusCode)
             {
 
+                // If you expect a JSON object in the response, you can deserialize it
+                var responseObject = await response.Content.ReadFromJsonAsync<CategoryDtoResponse>();
+
+                if (responseObject != null)
+                {
+                    //Console.WriteLine("Response content OBJ: " + responseObject.Id.ToString());
+                    // await iJSRuntime.InvokeVoidAsync("showSimpleAlert", "Category Created ID: " + responseObject.Id.ToString() + " with name: " + responseObject.Name);
+
+                    await Swal.FireAsync(
+                        "Created",
+                        $"Category Created ID:  {responseObject.Id.ToString()} with name: {responseObject.Name}",
+                        SweetAlertIcon.Success
+                    );
+
+                }
+
                 navigationManager.NavigateTo("/Categories/list");
             }
 
         }
-        catch (HttpRequestException e)
+        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadRequest)
         {
-            // Maneja cualquier error de la solicitud HTTP aquí
-            Console.WriteLine($"Request error: {e.Message}");
+            // Maneja específicamente el error 400
+            //string errorContent = await ex.Content.ReadAsStringAsync();
+            string errorContent = ex.Message.ToString();
+            Console.WriteLine("Bad Request: " + errorContent);
+
+            var jsonElement = JsonSerializer.Deserialize<JsonElement>(errorBodyFor400);
+            string formattedJson = JsonSerializer.Serialize(jsonElement, new JsonSerializerOptions { WriteIndented = true });
+            Console.WriteLine(formattedJson);
+
         }
-        catch (Exception e)
+        catch (HttpRequestException ex)
         {
-            // Maneja cualquier otro tipo de error aquí
-            Console.WriteLine($"General error: {e.Message}");
+            // Maneja otros errores HTTP
+            Console.WriteLine($"Request error: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            // Maneja cualquier otro tipo de error
+            Console.WriteLine($"General error: {ex.Message}");
         }
 
     }

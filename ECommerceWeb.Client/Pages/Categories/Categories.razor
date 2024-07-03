@@ -2,11 +2,12 @@
 @using ECommerceWeb.Dto.Response
 @inject HttpClient httpClient
 @inject NavigationManager navigationManager
+@inject SweetAlertService Swal;
 
 <PageTitle>Categories</PageTitle>
 <h3>Categories</h3>
 
-<NavLink href="/Categories/New/" class="btn btn-success mb-2">New Category</NavLink>
+<NavLink href="/Categories/New/" class="btn btn-success mb-2"><i class="bi bi-plus-square me-1"></i>New Category</NavLink>
 <hr />
 
 @if (categories is null)
@@ -46,14 +47,15 @@ else
                         @category.Description
                     </td>
                     <td>
-                        <button class="btn btn-success" @onclick="() => edit(category.Id)">Edit</button>
-                        <button class="btn btn-danger" @onclick="() => delete(category.Id)">Delete</button>
+                        <button class="btn btn-success" @onclick="() => edit(category.Id)"><i class="bi bi-pencil-square me-1"></i></button>
+                        <button class="btn btn-danger" @onclick="() => delete(category.Id)"><i class="bi bi-trash me-1"></i></button>
 
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+
 }
 
 @code {
@@ -75,29 +77,85 @@ else
 
     private async Task delete(int Id)
     {
-        try
-        {
-            // call the api
-            HttpResponseMessage response = await httpClient.DeleteAsync($"api/categories/{Id}");
-
-            // check if response is succesfull
-            response.EnsureSuccessStatusCode();
-            if (response.IsSuccessStatusCode)
+        SweetAlertResult result = await Swal.FireAsync(new SweetAlertOptions
             {
-                categories = await httpClient.GetFromJsonAsync<ICollection<CategoryDtoResponse>>("api/categories");
+                Title = "Are you sure?",
+                Text = "You will delete this category!",
+                Icon = SweetAlertIcon.Warning,
+                ShowCancelButton = true,
+                ConfirmButtonText = "Yes, delete it!",
+                CancelButtonText = "No, keep it"
+            });
+
+        if (result.IsConfirmed)
+        {
+
+            try
+            {
+                // call the api
+                HttpResponseMessage response = await httpClient.DeleteAsync($"api/categories/{Id}");
+
+                // check if response is succesfull
+                response.EnsureSuccessStatusCode();
+                if (response.IsSuccessStatusCode)
+                {
+                    categories = await httpClient.GetFromJsonAsync<ICollection<CategoryDtoResponse>>("api/categories");
+                    await Swal.FireAsync(
+                        "Deleted",
+                        "Category has been deleted.",
+                        SweetAlertIcon.Success
+                    );
+
+                }
+                else
+                {
+                    await Swal.FireAsync(
+                        "Error",
+                        "Error when trying to delete the category",
+                        SweetAlertIcon.Success
+                    );
+                }
+
+            }
+            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                // Maneja específicamente el error 400
+                //string errorContent = await ex.Content.ReadAsStringAsync();
+                string errorContent = ex.Message.ToString();
+                Console.WriteLine($"Bad Request: {errorContent}");
+
+                await Swal.FireAsync(
+                        "Error",
+                        "Error when trying to delete the category",
+                        SweetAlertIcon.Success
+                    );
+
+            }
+            catch (HttpRequestException ex)
+            {
+                // Maneja otros errores HTTP
+                Console.WriteLine($"Request error: {ex.Message}");
+
+                await Swal.FireAsync(
+                        "Error",
+                        $"Request error: {ex.Message}",
+                        SweetAlertIcon.Success
+                    );
+            }
+            catch (Exception ex)
+            {
+                // Maneja cualquier otro tipo de error
+                Console.WriteLine($"General error: {ex.Message}");
+
+                await Swal.FireAsync(
+                        "Error",
+                        $"General error: {ex.Message}",
+                        SweetAlertIcon.Success
+                    );
             }
 
         }
-        catch (HttpRequestException e)
-        {
-            // Maneja cualquier error de la solicitud HTTP aquí
-            Console.WriteLine($"Request error: {e.Message}");
-        }
-        catch (Exception e)
-        {
-            // Maneja cualquier otro tipo de error aquí
-            Console.WriteLine($"General error: {e.Message}");
-        }
+
     }
 
 

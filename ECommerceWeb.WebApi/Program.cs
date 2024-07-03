@@ -37,7 +37,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 //// this is a minimal api example
-app.MapGet("/api/v2/categories", async (ICategoryRepository repository) => Results.Ok(await repository.ListAsync()));
+//app.MapGet("/api/v2/categories", async (ICategoryRepository repository) => Results.Ok(await repository.ListAsync()));
 
 app.MapControllers();
 app.MapFallbackToFile("index.html");
