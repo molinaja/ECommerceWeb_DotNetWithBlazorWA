@@ -1,4 +1,7 @@
 ﻿@page "/"
+@inject BlazorSpinner.SpinnerService _spinnerService
+@inject BlazorSpinner.LoadingService _loadingService
+
 
 <PageTitle>Home</PageTitle>
 
@@ -7,3 +10,62 @@
 Welcome to your new app.
 
 
+<Card Style="width:18rem;">
+    <CardBody>
+        <CardTitle>Card title</CardTitle>
+        <CardText>Some quick example text to build on the card title and make up the bulk of the card's content.</CardText>
+        <Button Color="ButtonColor.Primary" To="#" Type="ButtonType.Link">Go somewhere</Button>
+    </CardBody>
+</Card>
+
+<Icon Name="IconName.Alarm" />
+<Icon Name="IconName.AlarmFill" />
+<Icon Name="IconName.Window" />
+<Icon Name="IconName.Apple" />
+<br />
+
+
+
+<br />
+
+<BlazorBootstrap.Spinner Class="me-3" Type="SpinnerType.Dots" Color="SpinnerColor.Primary" Visible="@visible" />
+
+<div class="b-block mt-3">
+    <Button Type="ButtonType.Button" Color="ButtonColor.Primary" Size="Size.Small" @onclick="Hide">Hide</Button>
+    <Button Type="ButtonType.Button" Color="ButtonColor.Primary" Size="Size.Small" @onclick="Show">Show</Button>
+</div>
+
+
+<br />
+<input type="button" value="Start Loading Spinner (5 second demo)" class="btn btn-primary mt-2" @onclick="StartSpinner" />
+<input type="button" value="Start Loading Text (5 second demo)" class="btn btn-primary mt-2" @onclick="StartLoading" />
+
+
+@code {
+   
+
+    private bool visible = true;
+
+    private void Hide() => visible = false;
+
+    private void Show() => visible = true;
+
+
+    async public Task StartSpinner()
+    {
+        _spinnerService.Show();
+
+        await Task.Delay(5000);
+
+        _spinnerService.Hide();
+    }
+
+    async public Task StartLoading()
+    {
+        _loadingService.Show();
+
+        await Task.Delay(5000);
+
+        _loadingService.Hide();
+    }
+}

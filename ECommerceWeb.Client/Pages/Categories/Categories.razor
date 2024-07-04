@@ -12,7 +12,8 @@
 
 @if (categories is null)
 {
-    <p>Loading...</p>
+    <p>Loading <BlazorBootstrap.Spinner Class="me-3" Type="SpinnerType.Dots" Color="SpinnerColor.Primary" Visible="true" /></p>
+    
 }
 else
 {
@@ -47,8 +48,8 @@ else
                         @category.Description
                     </td>
                     <td>
-                        <button class="btn btn-success" @onclick="() => edit(category.Id)"><i class="bi bi-pencil-square me-1"></i></button>
-                        <button class="btn btn-danger" @onclick="() => delete(category.Id)"><i class="bi bi-trash me-1"></i></button>
+                        <button class="btn btn-success" @onclick="() => edit(category.Id)"><i class="bi bi-pencil-square"></i></button>
+                        <button class="btn btn-danger" @onclick="() => delete(category.Id)"><Icon CustomIconName="bi bi-trash"  /></button>
 
                     </td>
                 </tr>

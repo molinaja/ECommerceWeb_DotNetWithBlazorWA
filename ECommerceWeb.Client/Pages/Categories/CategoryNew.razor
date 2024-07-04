@@ -5,7 +5,8 @@
 @inject NavigationManager navigationManager;
 @inject IJSRuntime iJSRuntime
 @inject SweetAlertService Swal;
-
+@inject BlazorSpinner.SpinnerService _spinnerService
+@inject BlazorSpinner.LoadingService _loadingService
 
 <CategoryEditComponent categoryDtoRequest="categoryDtoRequest"
                        pageTitleParam="New Category"
@@ -22,7 +23,7 @@
 
     private async Task Save()
     {
-        // await loadingIndicator.Show();
+        _spinnerService.Show();
 
         //MSNALL = remember create a generic function  for manage al error of https for all crud
         string errorBodyFor400 = string.Empty;
@@ -51,6 +52,8 @@
                     //Console.WriteLine("Response content OBJ: " + responseObject.Id.ToString());
                     // await iJSRuntime.InvokeVoidAsync("showSimpleAlert", "Category Created ID: " + responseObject.Id.ToString() + " with name: " + responseObject.Name);
 
+                    _spinnerService.Hide();
+
                     await Swal.FireAsync(
                         "Created",
                         $"Category Created ID:  {responseObject.Id.ToString()} with name: {responseObject.Name}",
@@ -65,6 +68,7 @@
         }
         catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadRequest)
         {
+            _spinnerService.Hide();
             // Maneja específicamente el error 400
             //string errorContent = await ex.Content.ReadAsStringAsync();
             string errorContent = ex.Message.ToString();
@@ -78,19 +82,21 @@
         }
         catch (HttpRequestException ex)
         {
+            _spinnerService.Hide();
             // Maneja otros errores HTTP
             Console.WriteLine($"Request error: {ex.Message}");
             await iJSRuntime.InvokeVoidAsync("showSimpleAlert", $"Request error: {ex.Message}");
         }
         catch (Exception ex)
         {
+            _spinnerService.Hide();
             // Maneja cualquier otro tipo de error
             Console.WriteLine($"General error: {ex.Message}");
             await iJSRuntime.InvokeVoidAsync("showSimpleAlert", $"General error: {ex.Message}");
 
         }
 
-        // await loadingIndicator.Hide();
+        
 
     }
 
