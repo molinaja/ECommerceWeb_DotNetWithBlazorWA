@@ -6,6 +6,13 @@
 @inject NavigationManager navigationManager
 @inject SweetAlertService Swal
 
+<style>
+    .auto-adjust {
+        white-space: nowrap; /* Prevent line breaks */
+        width: 1%; /* Force the column to shrink to fit the content */
+    }
+</style>
+
 <h3>Brands</h3>
 <PageTitle>Brands</PageTitle>
 
@@ -19,7 +26,7 @@
     <div class="row">
         @if (brands is null)
         {
-            <p>Loading <BlazorBootstrap.Spinner Class="me-3" Type="SpinnerType.Dots" Color="SpinnerColor.Primary" Visible="true" /></p>
+            <p>Loading...</p>
 
         }
         else if (!brands.Any())
@@ -29,40 +36,42 @@
         }
         else
         {
-
-            <table class="table table-primary table-bordered">
-                <thead>
-                    <tr class="table-primary">
-                        <th>
-                            ID
-                        </th>
-                        <th>
-                            Name
-                        </th>
-                        <th>
-                            Controls
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var brand in brands)
-                    {
-                        <tr class="table-secondary">
-                            <td>
-                                @brand.Id
-                            </td>
-                            <td>
-                                @brand.Name
-                            </td>
-                            <td>
-                                <button class="btn btn-success" @onclick="() => edit(brand.Id)"><i class="bi bi-pencil-square"></i></button>
-                                <button class="btn btn-danger" @onclick="() => delete(brand.Id)"><Icon CustomIconName="bi bi-trash" /></button>
-
-                            </td>
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>
+                                ID
+                            </th>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Controls
+                            </th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var brand in brands)
+                        {
+                            <tr>
+                                <td>
+                                    @brand.Id
+                                </td>
+                                <td >
+                                    @brand.Name
+                                </td>
+                                <td class="auto-adjust">
+                                    <button class="btn btn-success" @onclick="() => edit(brand.Id)"><i class="bi bi-pencil-square"></i></button>
+                                    <button class="btn btn-danger" @onclick="() => delete(brand.Id)"><i class="bi bi-trash"></i></button>
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
 
         }
     </div>
@@ -82,7 +91,7 @@
     private void edit(int Id)
     {
         navigationManager.NavigateTo($"/Brand/Edit/{Id}");
-        
+
 
     }
 
