@@ -14,10 +14,41 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
     }
 
-    public async Task<ICollection<ProductInfo>> ListAsync(string filtro)
+    public async Task<ICollection<ProductInfo>> ListAsync(string filter)
     {
-        var coleccion = Context.Database.SqlQueryRaw<ProductInfo>("EXEC uspListarProductos {0}", filtro);
+        return await Context.Set<Product>()
+            .Where(p => p.Name.Contains(filter))
+            .AsNoTracking()
+            .Select(p => new ProductInfo
+            {
+                Id = p.Id,
+                Name = p.Name,
+                CategoryId = p.CategoryId,
+                BrandId = p.BrandId,
+                Price = p.Price,
+                Category = p.Category.Name,
+                Brand = p.Brand.Name,
+            })
+            .AsQueryable().ToListAsync();
 
-        return await coleccion.ToListAsync();
+
+    }
+
+    public async Task<ICollection<ProductInfo>> ListActiveAsync()
+    {
+        return await Context.Set<Product>()
+                .Where(p => p.state)
+                .AsNoTracking()
+                .Select(x => new ProductInfo
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Price = x.Price,
+                    Brand = x.Brand.Name,
+                    BrandId = x.BrandId,
+                    Category = x.Category.Name,
+                    CategoryId = x.CategoryId, 
+                })
+                .ToListAsync();
     }
 }

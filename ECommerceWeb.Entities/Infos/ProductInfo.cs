@@ -7,4 +7,6 @@ public class ProductInfo
     public float Price { get; set; }
     public int CategoryId { get; set; }
     public string Category { get; set; } = default!;
+    public string Brand { get; set; } = default!;
+    public int BrandId { get; set; }
 }

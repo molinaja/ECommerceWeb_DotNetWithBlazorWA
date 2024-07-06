@@ -21,7 +21,7 @@ namespace ECommerceWeb.WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var categories = await _repository.ListMinimalAsync();
+            var categories = await _repository.ListActiveAsync();
 
             return Ok(categories);
         }
@@ -60,9 +60,8 @@ namespace ECommerceWeb.WebApi.Controllers
         {
             var entity = await _repository.FindByIdAsync(id);
             if (entity is null)
-            {
-                return NotFound();
-            }
+            return NotFound();
+            
 
             entity.Name = request.Name;
             entity.Description = request.Description;

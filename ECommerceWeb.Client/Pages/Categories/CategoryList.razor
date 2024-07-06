@@ -1,0 +1,178 @@
+﻿@page "/Category/List"
+@using ECommerceWeb.Dto.Response
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+@inject SweetAlertService Swal;
+
+<PageTitle>Categories</PageTitle>
+<h3>Categories</h3>
+﻿<div class="container">
+     
+    <div class="row">
+        <div class="col-3">
+            <NavLink href="/Category/New/" class="btn btn-success mb-2"><i class="bi bi-plus-square me-1"></i>New Category</NavLink>
+
+        </div>
+    </div>
+    <div class="row">
+        @if (categories is null)
+        {
+            <p>Loading <BlazorBootstrap.Spinner Class="me-3" Type="SpinnerType.Dots" Color="SpinnerColor.Primary" Visible="true" /></p>
+
+        }
+        else if (!categories.Any())
+        {
+            <p>Nothing for show for it <i class="bi bi-x-square"></i></p>
+        }
+        else
+        {
+            <table class="table table-primary table-bordered">
+                <thead>
+                    <tr class="table-primary">
+                        <th>
+                            ID
+                        </th>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            Description
+                        </th>
+                        <th>
+                            Controls
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var category in categories)
+                    {
+                        <tr class="table-secondary">
+                            <td>
+                                @category.Id
+                            </td>
+                            <td>
+                                @category.Name
+                            </td>
+                            <td>
+                                @category.Description
+                            </td>
+                            <td>
+                                <button class="btn btn-success" @onclick="() => edit(category.Id)"><i class="bi bi-pencil-square"></i></button>
+                                <button class="btn btn-danger" @onclick="() => delete(category.Id)"><Icon CustomIconName="bi bi-trash" /></button>
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        }
+    </div>
+
+</div>
+
+
+
+@code {
+
+    public ICollection<CategoryDtoResponse>? categories { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await httpClient.GetFromJsonAsync<ICollection<CategoryDtoResponse>>("api/categories");
+        //Console.WriteLine("My debug output.");
+
+    }
+
+    private void edit(int Id)
+    {
+        navigationManager.NavigateTo($"/Category/Edit/{Id}");
+
+    }
+
+    private async Task delete(int Id)
+    {
+        SweetAlertResult result = await Swal.FireAsync(new SweetAlertOptions
+            {
+                Title = "Are you sure?",
+                Text = "You will delete this category!",
+                Icon = SweetAlertIcon.Warning,
+                ShowCancelButton = true,
+                ConfirmButtonText = "Yes, delete it!",
+                CancelButtonText = "No, keep it"
+            });
+
+        if (result.IsConfirmed)
+        {
+
+            try
+            {
+                // call the api
+                HttpResponseMessage response = await httpClient.DeleteAsync($"api/categories/{Id}");
+
+                // check if response is succesfull
+                response.EnsureSuccessStatusCode();
+                if (response.IsSuccessStatusCode)
+                {
+                    categories = await httpClient.GetFromJsonAsync<ICollection<CategoryDtoResponse>>("api/categories");
+                    await Swal.FireAsync(
+                        "Deleted",
+                        "Category has been deleted.",
+                        SweetAlertIcon.Success
+                    );
+
+                }
+                else
+                {
+                    await Swal.FireAsync(
+                        "Error",
+                        "Error when trying to delete the category",
+                        SweetAlertIcon.Success
+                    );
+                }
+
+            }
+            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                // Maneja específicamente el error 400
+                //string errorContent = await ex.Content.ReadAsStringAsync();
+                string errorContent = ex.Message.ToString();
+                Console.WriteLine($"Bad Request: {errorContent}");
+
+                await Swal.FireAsync(
+                        "Error",
+                        "Error when trying to delete the category",
+                        SweetAlertIcon.Success
+                    );
+
+            }
+            catch (HttpRequestException ex)
+            {
+                // Maneja otros errores HTTP
+                Console.WriteLine($"Request error: {ex.Message}");
+
+                await Swal.FireAsync(
+                        "Error",
+                        $"Request error: {ex.Message}",
+                        SweetAlertIcon.Success
+                    );
+            }
+            catch (Exception ex)
+            {
+                // Maneja cualquier otro tipo de error
+                Console.WriteLine($"General error: {ex.Message}");
+
+                await Swal.FireAsync(
+                        "Error",
+                        $"General error: {ex.Message}",
+                        SweetAlertIcon.Success
+                    );
+            }
+
+        }
+
+    }
+
+
+
+}

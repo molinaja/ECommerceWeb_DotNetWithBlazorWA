@@ -4,6 +4,6 @@ namespace ECommerceWeb.Repositories.Interfaces
 {
     public interface ICategoryRepository : IBaseRepository<Category>
     {
-        Task<ICollection<Category>> ListMinimalAsync();
+        Task<ICollection<Category>> ListActiveAsync();
     }
 }

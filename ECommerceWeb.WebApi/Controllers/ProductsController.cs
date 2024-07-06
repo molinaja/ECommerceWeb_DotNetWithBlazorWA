@@ -2,6 +2,7 @@
 using ECommerceWeb.Dto.Response;
 using ECommerceWeb.Entities;
 using ECommerceWeb.Repositories.Interfaces;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceWeb.WebApi.Controllers;
@@ -22,36 +23,17 @@ public class ProductsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        var collection = await _repository.ListAsync();
+        var collection = await _repository.ListActiveAsync();
 
-        var response = collection.Select(p => new ProductDtoResponse
-        {
-            Id = p.Id,
-            Name = p.Name,
-            Price = p.Price,
-            Category = p.Category?.Name ?? string.Empty
-        }).ToList();
-
-        _logger.LogWarning("this is a warning message");
-
-        return Ok(response);
+        return Ok(collection);
     }
 
     [HttpGet("filtros")]
     public async Task<IActionResult> Get(string? filtro)
     {
-        var collection = await _repository.ListAsync(filtro ?? string.Empty);
+        var entity = await _repository.ListAsync(filtro ?? string.Empty);
 
-        var response = collection.Select(p => new ProductDtoResponse
-        {
-            Id = p.Id,
-            Name = p.Name,
-            Price = p.Price,
-            CategoryId = p.CategoryId,
-            Category = p.Category
-        }).ToList();
-
-        return Ok(response);
+        return Ok(entity);
     }
 
     [HttpGet("{id:int}")]
@@ -62,39 +44,43 @@ public class ProductsController : ControllerBase
         if (entity is null)
             return NotFound();
 
-        return Ok(new ProductDtoResponse
-        {
-            Id = entity.Id,
-            Name = entity.Name,
-            Price = entity.Price,
-            CategoryId = entity.CategoryId,
-            Category = entity.Category?.Name ?? string.Empty
-        });
+        return Ok(entity);
     }
 
     [HttpPost]
-    public async Task< IActionResult> Post(ProductDtoRequest request)
+    public async Task<IActionResult> Post(ProductDtoRequest request)
     {
-        var entity = new Product
+        var entity = new Product  
         {
             Name = request.Name,
             Price = request.Price,
-            CategoryId = request.CategoryId
+            CategoryId = request.CategoryId,
+            BrandId = request.BrandId,
         };
 
         await _repository.AddAsync(entity);
-
-        return Created($"api/products/{entity.Id}", entity);
+        
+        return Created($"api/products/{entity.Id}", request);
     }
 
     [HttpPut]
-    public async Task<IActionResult> Put(int id, Product request)
+    public async Task<IActionResult> Put(int id, ProductDtoRequest request)
     {
-        // TODO: Corregir
+        var entity = await _repository.FindByIdAsync(id);
+
+        if (entity is null)
+            return NotFound();
+
+        entity.Name = request.Name;
+        entity.Price = request.Price;
+        entity.CategoryId = request.CategoryId;
+        entity.BrandId = request.BrandId;
+        
+
         await _repository.UpdateAsync();
 
         return Ok();
-    }
+    }   
 
     [HttpDelete]
     public async Task<IActionResult> Delete(int id)

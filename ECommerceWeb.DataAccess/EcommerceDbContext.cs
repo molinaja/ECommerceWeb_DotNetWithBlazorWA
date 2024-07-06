@@ -16,6 +16,8 @@ public class EcommerceDbContext : DbContext
     public DbSet<Product> Products { get; set; } = default!;
     public DbSet<Sale> Sales { get; set; } = default!;
     public DbSet<SaleDetail> SaleDetails { get; set; } = default!;
+    public DbSet<Brand> Brands { get; set; } = default!;
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

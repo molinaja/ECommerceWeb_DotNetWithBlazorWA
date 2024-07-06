@@ -16,8 +16,11 @@ builder.Services.AddDbContext<EcommerceDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("EcommerceDb"));
 });
+
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
+builder.Services.AddTransient<IBrandRepository, BrandRepository>();
+
 
 
 var app = builder.Build();

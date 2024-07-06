@@ -1,10 +1,12 @@
-﻿@page "/Categories/Edit/{Id:int}"
+﻿@page "/Category/Edit/{Id:int}"
 @using System.Text.Json
 
 @inject HttpClient httpClient
 @inject NavigationManager navigationManager;
 @inject IJSRuntime iJSRuntime
 @inject SweetAlertService Swal;
+@inject BlazorSpinner.SpinnerService _spinnerService
+@inject BlazorSpinner.LoadingService _loadingService
 
 <CategoryEditComponent categoryDtoRequest="categoryDtoRequest"
                        pageTitleParam="New Category"
@@ -16,7 +18,6 @@
     [Parameter]
     public int Id { get; set; }
 
-    //public CategoryDtoRequest categoryDtoRequest  = new CategoryDtoRequest();
     public CategoryDtoRequest categoryDtoRequest { get; set; } = new();
 
     protected override async Task OnParametersSetAsync()
@@ -30,6 +31,7 @@
 
     private async Task Update()
     {
+        _spinnerService.Show();
         string errorBodyFor400 = string.Empty;
         try
         {
@@ -48,28 +50,21 @@
             if (response.IsSuccessStatusCode)
             {
 
-                // If you expect a JSON object in the response, you can deserialize it
-                var responseObject = await response.Content.ReadFromJsonAsync<CategoryDtoResponse>();
+                _spinnerService.Hide();
+                await Swal.FireAsync(
+                    "Updated",
+                    $"Category updated ID:  {Id}",
+                    SweetAlertIcon.Success
+                );
 
-                if (responseObject != null)
-                {
-                    //Console.WriteLine("Response content OBJ: " + responseObject.Id.ToString());
-                    // await iJSRuntime.InvokeVoidAsync("showSimpleAlert", "Category Created ID: " + responseObject.Id.ToString() + " with name: " + responseObject.Name);
-
-                    await Swal.FireAsync(
-                        "Created",
-                        $"Category Created ID:  {responseObject.Id.ToString()} with name: {responseObject.Name}",
-                        SweetAlertIcon.Success
-                    );
-
-                }
-
-                navigationManager.NavigateTo("/Categories/list");
+                navigationManager.NavigateTo("/Category/List");
+                
             }
 
         }
         catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadRequest)
         {
+            _spinnerService.Hide();
             // Maneja específicamente el error 400
             //string errorContent = await ex.Content.ReadAsStringAsync();
             string errorContent = ex.Message.ToString();
@@ -82,13 +77,16 @@
         }
         catch (HttpRequestException ex)
         {
+            _spinnerService.Hide();
             // Maneja otros errores HTTP
             Console.WriteLine($"Request error: {ex.Message}");
         }
         catch (Exception ex)
         {
+            _spinnerService.Hide();
             // Maneja cualquier otro tipo de error
             Console.WriteLine($"General error: {ex.Message}");
+            
         }
 
     }

@@ -6,4 +6,6 @@ namespace ECommerceWeb.Repositories.Interfaces;
 public interface IProductRepository : IBaseRepository<Product>
 {
     Task<ICollection<ProductInfo>> ListAsync(string filtro);
+
+    Task<ICollection<ProductInfo>> ListActiveAsync();
 }
