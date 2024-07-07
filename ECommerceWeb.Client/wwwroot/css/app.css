@@ -101,3 +101,8 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+
+.auto-adjust {
+    white-space: nowrap; /* Prevent line breaks */
+    width: 1%; /* Force the column to shrink to fit the content */
+}

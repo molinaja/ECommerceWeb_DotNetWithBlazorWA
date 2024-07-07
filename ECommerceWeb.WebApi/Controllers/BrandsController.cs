@@ -45,9 +45,12 @@ namespace ECommerceWeb.WebApi.Controllers
         }
 
         // DELETE api/<BrandsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
         {
+            await _repository.DeleteAsync(id);
+
+            return Ok();
         }
     }
 }

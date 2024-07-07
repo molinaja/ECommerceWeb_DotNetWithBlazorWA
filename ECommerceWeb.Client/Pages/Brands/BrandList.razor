@@ -6,17 +6,9 @@
 @inject NavigationManager navigationManager
 @inject SweetAlertService Swal
 
-<style>
-    .auto-adjust {
-        white-space: nowrap; /* Prevent line breaks */
-        width: 1%; /* Force the column to shrink to fit the content */
-    }
-</style>
-
 <h3>Brands</h3>
 <PageTitle>Brands</PageTitle>
-
-<div class="Container">
+<div class="container">
     <div class="row">
         <div class="col-3">
             <NavLink href="/Brand/New/" class="btn btn-success mb-2"><i class="bi bi-plus-square me-1"></i>New Brand</NavLink>
@@ -115,7 +107,7 @@
             try
             {
                 // call the api
-                HttpResponseMessage response = await httpClient.DeleteAsync($"api/categories/{Id}");
+                HttpResponseMessage response = await httpClient.DeleteAsync($"api/Brands/{Id}");
 
                 // check if response is succesfull
                 response.EnsureSuccessStatusCode();
