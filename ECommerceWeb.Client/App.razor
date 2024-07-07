@@ -4,9 +4,26 @@
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
     </Found>
     <NotFound>
-        <PageTitle>Not found</PageTitle>
+        <PageTitle>404 Not found</PageTitle>
         <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
+
+            <div>
+                <section id="banner" class="py-3" style="background: #F9F3EC;">
+                    <div class="container py-5 my-3">
+                        <div class="hero-content py-5 my-3">
+                            <h2 class="display-1 mt-3 mb-0">Error <span class="text-primary"> 404 </span></h2>
+                            <p>Sorry! Page that you are looking for is not available.</p>
+                            <NavLink href="" class="btn btn-outline-dark btn-lg text-uppercase fs-6 px-4 py-3 rounded-1 mt-4">
+                                Go Back Home
+                                <svg width="24" height="24" viewBox="0 0 24 24" class="mb-1">
+                                    <use xlink:href="#arrow-right"></use>
+                                </svg>
+                            </NavLink>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
         </LayoutView>
     </NotFound>
 </Router>

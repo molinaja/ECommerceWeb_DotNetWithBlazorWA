@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Components\NewFolder\" />
+    <Folder Include="Pages\Components\BrandComponents\" />
     <Folder Include="Pages\Products\" />
     <Folder Include="wwwroot\JS_Utilities\" />
   </ItemGroup>

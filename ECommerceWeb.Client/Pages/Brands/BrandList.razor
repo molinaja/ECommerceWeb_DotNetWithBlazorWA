@@ -36,40 +36,42 @@
         }
         else
         {
-            <div class="table-responsive">
-                <table class="table table-hover table-bordered">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>
-                                ID
-                            </th>
-                            <th>
-                                Name
-                            </th>
-                            <th>
-                                Controls
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var brand in brands)
-                        {
+            <div class="container">
+                <div class="table">
+                    <table class="table table-hover table-bordered">
+                        <thead>
                             <tr>
-                                <td>
-                                    @brand.Id
-                                </td>
-                                <td >
-                                    @brand.Name
-                                </td>
-                                <td class="auto-adjust">
-                                    <button class="btn btn-success" @onclick="() => edit(brand.Id)"><i class="bi bi-pencil-square"></i></button>
-                                    <button class="btn btn-danger" @onclick="() => delete(brand.Id)"><i class="bi bi-trash"></i></button>
-
-                                </td>
+                                <th scope="col" class="card-title text-uppercase">
+                                    ID
+                                </th>
+                                <th scope="col" class="card-title text-uppercase">
+                                    Name
+                                </th>
+                                <th scope="col" class="card-title text-uppercase">
+                                    Controls
+                                </th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var brand in brands)
+                            {
+                                <tr>
+                                    <td>
+                                        @brand.Id
+                                    </td>
+                                    <td>
+                                        @brand.Name
+                                    </td>
+                                    <td class="auto-adjust">
+                                        <button class="btn btn-success" @onclick="() => edit(brand.Id)"><i class="bi bi-pencil-square"></i></button>
+                                        <button class="btn btn-danger" @onclick="() => delete(brand.Id)"><i class="bi bi-trash"></i></button>
+
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
 
