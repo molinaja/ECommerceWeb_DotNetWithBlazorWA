@@ -1,4 +1,6 @@
-﻿using ECommerceWeb.Repositories.Interfaces;
+﻿using ECommerceWeb.Dto.Request;
+using ECommerceWeb.Entities;
+using ECommerceWeb.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -32,11 +34,19 @@ namespace ECommerceWeb.WebApi.Controllers
             return "value";
         }
 
-        // POST api/<BrandsController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+        //// POST api/<BrandsController>
+        //public async Task<IActionResult> Post(BrandDtoRequest request)
+        //{
+        //    var category = new Category
+        //    {
+        //        Name = request.Name,
+        //        Description = request.Description
+        //    };
+
+        //    var id = await _repository.AddAsync(category);
+
+        //    return CreatedAtAction(nameof(Get), new { id }, category);
+        //}
 
         // PUT api/<BrandsController>/5
         [HttpPut("{id}")]

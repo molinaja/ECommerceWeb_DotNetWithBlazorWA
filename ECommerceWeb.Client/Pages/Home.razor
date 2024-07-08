@@ -1,4 +1,6 @@
 ﻿@page "/"
+@inject IJSRuntime JS
+
 <section id="banner" style="background: #F9F3EC;">
     <div class="container">
         <div class="swiper main-swiper">
@@ -87,7 +89,7 @@
             <div class="col text-center">
                 <a href="#" class="categories-item">
                     <iconify-icon class="category-icon" icon="ph:bowl-food"></iconify-icon>
-                    <h5>Foodies</h5>
+                    <h5>Foodiessssssssss</h5>
                 </a>
             </div>
             <div class="col text-center">
@@ -379,9 +381,9 @@
             <h2 class="display-3 fw-normal">Pet Foodies</h2>
             <div class="mb-4 mb-md-0">
                 <p class="m-0">
-                    <button class="filter-button me-4  active" data-filter="*">ALL</button>
-                    <button class="filter-button me-4 " data-filter=".cat">CAT</button>
-                    <button class="filter-button me-4 " data-filter=".dog">DOG</button>
+                    <button @onclick="() => FilterItems(categoryALL)" class="filter-button me-4  active">ALL</button>
+                    <button   @onclick="() => FilterItems(categoryCat)" class="filter-button me-4 ">gatooo</button>
+                    <button @onclick="() => edit()"  class="filter-button me-4 " data-filter=".dog">DOG</button>
                     <button class="filter-button me-4 " data-filter=".bird">BIRD</button>
                 </p>
             </div>
@@ -1289,7 +1291,24 @@
 </section>
 
 
-@code {
-   
 
+@code {
+    const string categoryALL = "*";
+    const string categoryCat = ".cat";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("initializeScripts");
+        }
+    }
+
+    private async Task FilterItems(string filterValue)
+    {
+        
+        await JS.InvokeVoidAsync("filterIsotope", filterValue);
+    }
+
+    private void edit() { }
 }
