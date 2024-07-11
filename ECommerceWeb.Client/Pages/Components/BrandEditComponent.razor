@@ -1,0 +1,48 @@
+﻿<div class="container">
+
+    <PageTitle>@pageTitleParam</PageTitle>
+    <h1 class="text-uppercase mb-2 mt-1">@pageTitleParam</h1>
+
+    <EditForm Model="brandDtoRequest" OnValidSubmit="@onBtnSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="row">
+            <div class="col-auto">
+                <div class="mb-3">
+                    <label for="NameID" class="form-label">Name</label>
+
+                    <InputText class="form-control" id="NameID" placeholder="Name" @bind-Value="brandDtoRequest.Name" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-auto">
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-outline-success"><i class="bi bi-floppy me-1"></i>@nameBtnFormSubmit</button>
+                </div>
+            </div>
+            <div class="col-auto/"
+            <div class="mb-3">
+               <NavLink class="btn btn-outline-danger " href="Category/list"><i class="bi bi-backspace me-1"></i> Return</NavLink>
+            </div>
+        </div>
+        </div>
+
+    </EditForm>
+</div>
+
+@code {
+
+    [Parameter]
+    public BrandDtoRequest brandDtoRequest { get; set; } = new();
+    [Parameter]
+    public string pageTitleParam { get; set; } = "title loading...";
+    [Parameter]
+    public string nameBtnFormSubmit { get; set; } = "name loading...";
+    [Parameter]
+    public EventCallback onBtnSubmit { get; set; }
+
+
+}

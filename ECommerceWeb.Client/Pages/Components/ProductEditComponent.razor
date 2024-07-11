@@ -1,0 +1,51 @@
+﻿<div class="container">
+    <PageTitle>@pageTitle</PageTitle>
+    <h1 class="text-uppercase mb-2 mt-1">@pageTitle</h1>
+
+    <EditForm Model="product" OnValidSubmit="@onBtnSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="row">
+            <div class="col-auto">
+                <label for="Name" class="form-label">Name</label>
+                <InputText class="form-control" id="Name" placeholder="Name" @bind-Value="product.Name" />
+            </div>
+        </div>
+        <div class="row">
+            <div class=" col-auto">
+                <label for="Price" class="form-label">Price</label>
+                <InputNumber class="form-control" id="Price" placeholder="Price" @bind-Value="product.Price" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+            </div>
+        </div>
+
+    </EditForm>
+
+
+</div>
+
+@code {
+
+    [Parameter]
+    public ProductDtoRequest product { get; set; } = new();
+    [Parameter]
+    public ICollection<BrandDtoResponse>? brands { get; set; }
+    [Parameter]
+    public ICollection<CategoryDtoResponse>? categories { get; set; }
+    [Parameter]
+    public string pageTitle { get; set; } = "title loading...";
+    [Parameter]
+    public string nameBtnFormSubmit { get; set; } = "name loading...";
+    [Parameter]
+    public EventCallback onBtnSubmit { get; set; }
+
+
+}

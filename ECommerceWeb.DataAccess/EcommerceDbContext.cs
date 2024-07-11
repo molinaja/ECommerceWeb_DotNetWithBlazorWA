@@ -24,6 +24,7 @@ public class EcommerceDbContext : DbContext
         base.OnModelCreating(modelBuilder);
         //We apply a custom configuration of entitys 
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        modelBuilder.Entity<Product>().HasQueryFilter(p => p.state == true);
     }
 
 }

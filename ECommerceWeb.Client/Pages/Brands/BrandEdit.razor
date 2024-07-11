@@ -1,6 +1,98 @@
 ﻿@page "/Brand/Edit/{Id:int}"
-<h3>BrandEdit</h3>
+@using System.Text.Json
+
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager;
+@inject IJSRuntime iJSRuntime
+@inject SweetAlertService Swal;
+@inject BlazorSpinner.SpinnerService _spinnerService
+@inject BlazorSpinner.LoadingService _loadingService
+
+<BrandEditComponent brandDtoRequest="brandDtoRequest"
+                       pageTitleParam="New Brand"
+                       nameBtnFormSubmit="Update"
+                       onBtnSubmit="Update"></BrandEditComponent>
 
 @code {
 
+    [Parameter]
+    public int Id { get; set; }
+
+    public BrandDtoRequest brandDtoRequest { get; set; } = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var res = await httpClient.GetFromJsonAsync<BrandDtoRequest>($"api/Brands/{Id}");
+        if (res != null)
+        {
+            brandDtoRequest = res;
+        }
+    }
+
+    private async Task Update()
+    {
+        _spinnerService.Show();
+        string errorBodyFor400 = string.Empty;
+        try
+        {
+            // call the api
+            HttpResponseMessage response = await httpClient.PutAsJsonAsync($"api/Brands/{Id}", brandDtoRequest);
+
+            Console.WriteLine($"INFO Status Code= {(int)response.StatusCode}");
+            if ((int)response.StatusCode == 400)
+            {
+                errorBodyFor400 = await response.Content.ReadAsStringAsync();
+            }
+
+            // check if response is succesfull
+            response.EnsureSuccessStatusCode();
+
+            if (response.IsSuccessStatusCode)
+            {
+
+                _spinnerService.Hide();
+                await Swal.FireAsync(
+                    "Updated",
+                    $"Category updated ID:  {Id}",
+                    SweetAlertIcon.Success
+                );
+
+                navigationManager.NavigateTo("/Brand/List");
+
+            }
+
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        {
+            _spinnerService.Hide();
+            // Maneja específicamente el error 400
+            //string errorContent = await ex.Content.ReadAsStringAsync();
+            string errorContent = ex.Message.ToString();
+            Console.WriteLine("Bad Request: " + errorContent);
+
+            var jsonElement = JsonSerializer.Deserialize<JsonElement>(errorBodyFor400);
+            string formattedJson = JsonSerializer.Serialize(jsonElement, new JsonSerializerOptions { WriteIndented = true });
+            Console.WriteLine(formattedJson);
+
+        }
+        catch (HttpRequestException ex)
+        {
+            _spinnerService.Hide();
+            // Maneja otros errores HTTP
+            Console.WriteLine($"Request error: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            _spinnerService.Hide();
+            // Maneja cualquier otro tipo de error
+            Console.WriteLine($"General error: {ex.Message}");
+
+        }
+
+    }
+
+
+
+
 }
+

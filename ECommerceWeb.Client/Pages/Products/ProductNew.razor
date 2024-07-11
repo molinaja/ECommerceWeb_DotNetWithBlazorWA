@@ -1,6 +1,5 @@
-﻿@page "/Brand/New"
+﻿@page "/Product/New"
 @using System.Text.Json
-
 
 @inject HttpClient httpClient
 @inject NavigationManager navigationManager;
@@ -9,16 +8,32 @@
 @inject BlazorSpinner.SpinnerService _spinnerService
 @inject BlazorSpinner.LoadingService _loadingService
 
-<BrandEditComponent brandDtoRequest="brandDtoRequest"
-                       pageTitleParam="New Category"
-                       nameBtnFormSubmit="Save"
-                       onBtnSubmit="Save"></BrandEditComponent>
+<div class="container">
+
+    <ProductEditComponent brands="brands"
+                          categories="categories"
+                          product="product"
+                          nameBtnFormSubmit="Save"
+                          onBtnSubmit="Save"
+                          pageTitle="New Product" />
+
+</div>
 
 
 @code {
 
+    public ICollection<BrandDtoResponse>? brands { get; set; }
 
-    public BrandDtoRequest brandDtoRequest { get; set; } = new();
+    public ICollection<CategoryDtoResponse>? categories { get; set; }
+
+    public ProductDtoRequest product { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        brands = await httpClient.GetFromJsonAsync<ICollection<BrandDtoResponse>>("api/Brands");
+        categories = await httpClient.GetFromJsonAsync<ICollection<CategoryDtoResponse>>("api/Categories");
+
+    }
 
     private async Task Save()
     {
@@ -29,7 +44,7 @@
         try
         {
             // call the api
-            HttpResponseMessage response = await httpClient.PostAsJsonAsync("api/Brands", brandDtoRequest);
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync("api/Products", product);
 
             Console.WriteLine($"INFO Status Code= {(int)response.StatusCode}");
             if ((int)response.StatusCode == 400)
@@ -55,13 +70,13 @@
 
                     await Swal.FireAsync(
                         "Created",
-                        $"Brand Created ID:  {responseObject.Id.ToString()} with name: {responseObject.Name}",
+                        $"Category Created ID:  {responseObject.Id.ToString()} with name: {responseObject.Name}",
                         SweetAlertIcon.Success
                     );
 
                 }
 
-                navigationManager.NavigateTo("/Brand/List");
+                navigationManager.NavigateTo("/Product/List");
             }
 
         }
@@ -96,5 +111,7 @@
         }
 
     }
+
+
 
 }

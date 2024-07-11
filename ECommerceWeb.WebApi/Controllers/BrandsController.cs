@@ -28,30 +28,46 @@ namespace ECommerceWeb.WebApi.Controllers
         }
 
         // GET api/<BrandsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            var entity = await _repository.FindByIdAsync(id);
+
+            if (entity is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(entity);
         }
 
-        //// POST api/<BrandsController>
-        //public async Task<IActionResult> Post(BrandDtoRequest request)
-        //{
-        //    var category = new Category
-        //    {
-        //        Name = request.Name,
-        //        Description = request.Description
-        //    };
+        // POST api/<BrandsController>
+        [HttpPost]
+        public async Task<IActionResult> Post(BrandDtoRequest request)
+        {
+            var brand = new Brand
+            {
+                Name = request.Name,
+            };
 
-        //    var id = await _repository.AddAsync(category);
+            var id = await _repository.AddAsync(brand);
 
-        //    return CreatedAtAction(nameof(Get), new { id }, category);
-        //}
+            return CreatedAtAction(nameof(Get), new { id }, brand);
+        }
 
         // PUT api/<BrandsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Put(int id, BrandDtoRequest request)
         {
+            var entity = await _repository.FindByIdAsync(id);
+            if (entity is null)
+                return NotFound();
+
+            entity.Name = request.Name;
+
+            await _repository.UpdateAsync();
+
+            return Ok(entity);
         }
 
         // DELETE api/<BrandsController>/5

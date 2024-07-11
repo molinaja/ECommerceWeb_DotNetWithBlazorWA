@@ -28,10 +28,10 @@ public class ProductsController : ControllerBase
         return Ok(collection);
     }
 
-    [HttpGet("filtros")]
-    public async Task<IActionResult> Get(string? filtro)
+    [HttpGet("filters")]
+    public async Task<IActionResult> Get(string? filter)
     {
-        var entity = await _repository.ListAsync(filtro ?? string.Empty);
+        var entity = await _repository.ListAsync(filter ?? string.Empty);
 
         return Ok(entity);
     }
