@@ -1,4 +1,4 @@
-﻿@page "/Product/New"
+﻿@page "/Product/Edit/{Id:int}"
 @using System.Text.Json
 
 @inject HttpClient httpClient
@@ -13,20 +13,33 @@
     <ProductEditComponent brands="brands"
                           categories="categories"
                           product="product"
-                          nameBtnFormSubmit="Save"
-                          onBtnSubmit="Save"
-                          pageTitle="New Product" />
+                          nameBtnFormSubmit="Update"
+                          onBtnSubmit="Update"
+                          pageTitle="Update Product" />
 
 </div>
 
 
 @code {
 
+    [Parameter]
+    public int Id { get; set; }
+
     public ICollection<BrandDtoResponse>? brands { get; set; }
 
     public ICollection<CategoryDtoResponse>? categories { get; set; }
 
     public ProductDtoRequest product { get; set; } = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var res = await httpClient.GetFromJsonAsync<ProductDtoRequest>($"api/Products/{Id}");
+        if (res != null)
+        {
+            product = res;
+        }
+    }
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -35,16 +48,14 @@
 
     }
 
-    private async Task Save()
+    private async Task Update()
     {
         _spinnerService.Show();
-
-        //MSNALL = remember create a generic function  for manage al error of https for all crud
         string errorBodyFor400 = string.Empty;
         try
         {
             // call the api
-            HttpResponseMessage response = await httpClient.PostAsJsonAsync("api/Products", product);
+            HttpResponseMessage response = await httpClient.PutAsJsonAsync($"api/Products/{Id}", product);
 
             Console.WriteLine($"INFO Status Code= {(int)response.StatusCode}");
             if ((int)response.StatusCode == 400)
@@ -58,23 +69,15 @@
             if (response.IsSuccessStatusCode)
             {
 
-                // If you expect a JSON object in the response, you can deserialize it
-                var responseObject = await response.Content.ReadFromJsonAsync<ProductDtoResponse>();
-                string responseURL = response.Headers.Location?.ToString() ?? "No URL returned";
-
-                if (responseObject != null)
-                {
-                    Console.WriteLine($"URl returned {responseURL}");
-                    _spinnerService.Hide();
-                    await Swal.FireAsync(
-                        "Created",
-                        $"Product Created ID:  {responseObject.Id.ToString()} with name: {responseObject.Name}",
-                        SweetAlertIcon.Success
-                    );
-
-                }
+                _spinnerService.Hide();
+                await Swal.FireAsync(
+                    "Updated",
+                    $"Product updated ID:  {Id}",
+                    SweetAlertIcon.Success
+                );
 
                 navigationManager.NavigateTo("/Product/List");
+
             }
 
         }
@@ -85,7 +88,6 @@
             //string errorContent = await ex.Content.ReadAsStringAsync();
             string errorContent = ex.Message.ToString();
             Console.WriteLine("Bad Request: " + errorContent);
-            await iJSRuntime.InvokeVoidAsync("showSimpleAlert", $"Bad Request: {errorContent}");
 
             var jsonElement = JsonSerializer.Deserialize<JsonElement>(errorBodyFor400);
             string formattedJson = JsonSerializer.Serialize(jsonElement, new JsonSerializerOptions { WriteIndented = true });
@@ -97,19 +99,15 @@
             _spinnerService.Hide();
             // Maneja otros errores HTTP
             Console.WriteLine($"Request error: {ex.Message}");
-            await iJSRuntime.InvokeVoidAsync("showSimpleAlert", $"Request error: {ex.Message}");
         }
         catch (Exception ex)
         {
             _spinnerService.Hide();
             // Maneja cualquier otro tipo de error
             Console.WriteLine($"General error: {ex.Message}");
-            await iJSRuntime.InvokeVoidAsync("showSimpleAlert", $"General error: {ex.Message}");
 
         }
 
     }
-
-
 
 }

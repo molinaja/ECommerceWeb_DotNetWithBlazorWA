@@ -19,11 +19,45 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-6">
+            <div class="col-auto">
+                <label for="category" class="form-label">category:</label>
+                <InputSelect class="form-select" id="category" @bind-Value="product.CategoryId">
+                    <option>- Select category -</option>
+                    @if (categories is not null)
+                    {
+                        @foreach (var item in categories)
+                        {
+                            <option value="@item.Id">"@item.Id - @item.Name</option>
+                        }
+                    }
+                </InputSelect>
             </div>
         </div>
         <div class="row">
-            <div class="col-6">
+            <div class="col-auto">
+                <label for="brand" class="form-label">Brand:</label>
+                <InputSelect class="form-select" id="brand" @bind-Value="product.BrandId">
+                    <option>- Select brand -</option>
+                    @if (brands is not null)
+                    {
+                        @foreach (var item in brands)
+                        {
+                            <option value="@item.Id">"@item.Id - @item.Name</option>
+                        }
+                    }
+                </InputSelect>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-auto">
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-outline-success"><i class="bi bi-floppy me-1"></i>@nameBtnFormSubmit</button>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="mb-3">
+                    <NavLink class="btn btn-outline-danger " href="Product/list"><i class="bi bi-backspace me-1"></i> Return</NavLink>
+                </div>
             </div>
         </div>
 

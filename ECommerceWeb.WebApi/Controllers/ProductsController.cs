@@ -12,12 +12,10 @@ namespace ECommerceWeb.WebApi.Controllers;
 public class ProductsController : ControllerBase
 {
     private readonly IProductRepository _repository;
-    private readonly ILogger<ProductsController> _logger;
 
-    public ProductsController(IProductRepository repository, ILogger<ProductsController> logger)
+    public ProductsController(IProductRepository repository)
     {
         _repository = repository;
-        _logger = logger;
     }
 
     [HttpGet]
@@ -60,10 +58,10 @@ public class ProductsController : ControllerBase
 
         await _repository.AddAsync(entity);
         
-        return Created($"api/products/{entity.Id}", request);
+        return Created($"api/products/{entity.Id}", entity);
     }
 
-    [HttpPut]
+    [HttpPut("{id:int}")]
     public async Task<IActionResult> Put(int id, ProductDtoRequest request)
     {
         var entity = await _repository.FindByIdAsync(id);
@@ -80,9 +78,9 @@ public class ProductsController : ControllerBase
         await _repository.UpdateAsync();
 
         return Ok();
-    }   
+    }
 
-    [HttpDelete]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
         await _repository.DeleteAsync(id);

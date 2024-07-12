@@ -1,5 +1,8 @@
 ﻿@page "/Product/List"
 @inject HttpClient httpClient
+@inject NavigationManager navigationManager;
+@inject IJSRuntime iJSRuntime
+@inject SweetAlertService Swal;
 
 <div class="container">
     <h1>Products</h1>
@@ -9,7 +12,7 @@
             <NavLink href="/Product/New/" class="btn btn-success mb-2"><i class="bi bi-plus-square me-1"></i>New Product</NavLink>
         </div>
     </div>
-    <div class="row">
+    <div class="row mb-2">
         <div class="col-4">
             <div class="search-bar border rounded-2 border-dark-subtle pe-3">
                 <div id="searchBtn" class="text-center d-flex align-items-center" action="" method="">
@@ -85,10 +88,94 @@
 
     }
 
-    public void edit(int id) { }
+    private void edit(int Id)
+    {
+        navigationManager.NavigateTo($"/Product/Edit/{Id}");
 
-    public void delete(int id) { }
+    }
 
+    private async Task delete(int Id)
+    {
+        SweetAlertResult result = await Swal.FireAsync(new SweetAlertOptions
+            {
+                Title = "Are you sure?",
+                Text = "You will delete this Product!",
+                Icon = SweetAlertIcon.Warning,
+                ShowCancelButton = true,
+                ConfirmButtonText = "Yes, delete it!",
+                CancelButtonText = "No, keep it"
+            });
+
+        if (result.IsConfirmed)
+        {
+
+            try
+            {
+                // call the api
+
+                HttpResponseMessage response = await httpClient.DeleteAsync($"api/Products/{Id}");
+
+                // check if response is succesfull
+                response.EnsureSuccessStatusCode();
+                if (response.IsSuccessStatusCode)
+                {
+                    products = await httpClient.GetFromJsonAsync<ICollection<ProductDtoResponse>>("api/Products");
+                    await Swal.FireAsync(
+                        "Deleted",
+                        "Product has been deleted.",
+                        SweetAlertIcon.Success
+                    );
+
+                }
+                else
+                {
+                    await Swal.FireAsync(
+                        "Error",
+                        "Error when trying to delete the product",
+                        SweetAlertIcon.Success
+                    );
+                }
+
+            }
+            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                // Maneja específicamente el error 400
+                string errorContent = ex.Message.ToString();
+                Console.WriteLine($"Bad Request: {errorContent}");
+
+                await Swal.FireAsync(
+                        "Error",
+                        "Error when trying to delete the category",
+                        SweetAlertIcon.Success
+                    );
+
+            }
+            catch (HttpRequestException ex)
+            {
+                // Maneja otros errores HTTP
+                Console.WriteLine($"Request error: {ex.Message}");
+
+                await Swal.FireAsync(
+                        "Error",
+                        $"Request error: {ex.Message}",
+                        SweetAlertIcon.Success
+                    );
+            }
+            catch (Exception ex)
+            {
+                // Maneja cualquier otro tipo de error
+                Console.WriteLine($"General error: {ex.Message}");
+
+                await Swal.FireAsync(
+                        "Error",
+                        $"General error: {ex.Message}",
+                        SweetAlertIcon.Success
+                    );
+            }
+
+        }
+
+    }
 
 
 }
