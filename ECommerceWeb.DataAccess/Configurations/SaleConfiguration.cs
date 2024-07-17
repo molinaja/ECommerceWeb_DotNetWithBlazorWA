@@ -10,5 +10,7 @@ public class SaleConfiguration : IEntityTypeConfiguration<Sale>
     {
         builder.Property(p => p.SaleDate)
             .HasColumnType("DATE");
-    }
+
+        builder.Property( p => p.BillNumber).HasMaxLength(20);
+    } 
 }

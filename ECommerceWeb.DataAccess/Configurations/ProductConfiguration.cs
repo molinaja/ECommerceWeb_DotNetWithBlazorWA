@@ -9,16 +9,13 @@ using System.Threading.Tasks;
 
 namespace ECommerceWeb.DataAccess.Configurations
 {
-    public class BrandConfiguration : IEntityTypeConfiguration<Brand>
+    internal class ProductConfiguration : IEntityTypeConfiguration<Product>
     {
-
-        public void Configure(EntityTypeBuilder<Brand> builder)
+        public void Configure(EntityTypeBuilder<Product> builder)
         {
-            builder.Property(p => p.Name).HasMaxLength(50);
 
-            builder.Property(p => p.state)
-                .HasDefaultValue(true);
+            builder.Property(p => p.Name).HasMaxLength(100);
+            
         }
     }
-    
 }

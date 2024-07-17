@@ -8,6 +8,10 @@ namespace ECommerceWeb.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Category> builder)
         {
+
+            builder.Property(p => p.Name).HasMaxLength(50);
+            builder.Property(p => p.Description).HasMaxLength(100);
+
             // Data seeding
             builder.HasData(new List<Category>
             {

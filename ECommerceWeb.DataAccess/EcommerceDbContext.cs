@@ -1,10 +1,10 @@
 ﻿using System.Reflection;
 using ECommerceWeb.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-
 namespace ECommerceWeb.DataAccess;
 
-public class EcommerceDbContext : DbContext
+public class EcommerceDbContext : IdentityDbContext<EcommerseIdentity>
 {
     public EcommerceDbContext(DbContextOptions<EcommerceDbContext> options)
         : base(options)
@@ -24,7 +24,15 @@ public class EcommerceDbContext : DbContext
         base.OnModelCreating(modelBuilder);
         //We apply a custom configuration of entitys 
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-        modelBuilder.Entity<Product>().HasQueryFilter(p => p.state == true);
+        //modelBuilder.Entity<Product>().HasQueryFilter(p => p.state == true);
+    }
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        base.ConfigureConventions(configurationBuilder);
+        
+        configurationBuilder.Properties<string>().HaveMaxLength(255);
+
     }
 
 }
