@@ -96,7 +96,8 @@
     }
 
     private async Task delete(int Id)
-    {
+    {   
+
         SweetAlertResult result = await Swal.FireAsync(new SweetAlertOptions
             {
                 Title = "Are you sure?",
@@ -114,7 +115,7 @@
             {
                 // call the api
                 HttpResponseMessage response = await httpClient.DeleteAsync($"api/Brands/{Id}");
-
+                
                 // check if response is succesfull
                 response.EnsureSuccessStatusCode();
                 if (response.IsSuccessStatusCode)
