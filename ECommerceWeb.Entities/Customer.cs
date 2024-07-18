@@ -15,4 +15,5 @@ public class Customer : BaseEntity
     public string Email { get; set; } = null!;
 
     public DateOnly BirthDate { get; set; }
+
 }

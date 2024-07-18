@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ECommerceWeb.Dto\ECommerceWeb.Dto.csproj" />
     <ProjectReference Include="..\ECommerceWeb.Entities\ECommerceWeb.Entities.csproj" />
   </ItemGroup>
 

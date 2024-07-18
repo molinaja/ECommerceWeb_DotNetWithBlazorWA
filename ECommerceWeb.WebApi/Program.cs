@@ -24,6 +24,10 @@ builder.Services.AddDbContext<EcommerceDbContext>(options =>
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IBrandRepository, BrandRepository>();
+builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
+
+
+
 
 //ASPNETCORE iDENTITY CONFIG
 builder.Services.AddIdentity<EcommerseIdentity, IdentityRole>(polices =>
@@ -91,5 +95,11 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapFallbackToFile("index.html");
+
+await using var scope = app.Services.CreateAsyncScope();
+{
+    await UserInitializer.CreateInitRolesAndUsers(scope.ServiceProvider);
+
+}
 
 app.Run();

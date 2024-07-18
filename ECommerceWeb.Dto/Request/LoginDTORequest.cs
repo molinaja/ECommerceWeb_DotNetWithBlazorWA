@@ -9,9 +9,9 @@ namespace ECommerceWeb.Dto.Request
 {
     public class LoginDtoRequest
     {
-        [Required(ErrorMessage = Constant.ConsMsnRequeriedField)]
+        [Required(ErrorMessage = Statics.ConsMsnRequeriedField)]
         public string UserName { get; set; } = default!;
-        [Required(ErrorMessage = Constant.ConsMsnRequeriedField)]
+        [Required(ErrorMessage = Statics.ConsMsnRequeriedField)]
         public string Password { get; set; } = default!;
 
     }

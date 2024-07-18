@@ -9,8 +9,8 @@ namespace ECommerceWeb.Dto.Request
 {
     public class BrandDtoRequest
     {
-        [Required(ErrorMessage = Constant.ConsMsnRequeriedField)]
-        [StringLength(50, ErrorMessage = Constant.ConsMsnMaxLength)]
+        [Required(ErrorMessage = Statics.ConsMsnRequeriedField)]
+        [StringLength(50, ErrorMessage = Statics.ConsMsnMaxLength)]
         public string Name { get; set; } = default!;
     }
 }
