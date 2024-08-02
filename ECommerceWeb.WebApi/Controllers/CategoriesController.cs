@@ -2,12 +2,14 @@
 using ECommerceWeb.Dto.Request;
 using ECommerceWeb.Entities;
 using ECommerceWeb.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceWeb.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryRepository _repository;

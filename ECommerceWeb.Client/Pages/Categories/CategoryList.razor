@@ -1,8 +1,10 @@
 ﻿@page "/Category/List"
-@using ECommerceWeb.Dto.Response
+
 @inject HttpClient httpClient
 @inject NavigationManager navigationManager
 @inject SweetAlertService Swal
+
+@attribute [Authorize]
 
 ﻿<div class="container">
     <div class="row">

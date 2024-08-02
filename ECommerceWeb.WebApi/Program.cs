@@ -98,7 +98,7 @@ app.MapFallbackToFile("index.html");
 
 await using var scope = app.Services.CreateAsyncScope();
 {
-    await UserInitializer.CreateInitRolesAndUsers(scope.ServiceProvider);
+    await  UserInitializer.CreateInitRolesAndUsers(scope.ServiceProvider);
 
 }
 

@@ -1,6 +1,8 @@
-﻿using ECommerceWeb.DataAccess;
+﻿using Azure;
+using ECommerceWeb.DataAccess;
 using ECommerceWeb.Dto;
 using ECommerceWeb.Dto.Request;
+using ECommerceWeb.Dto.Response;
 using ECommerceWeb.Entities;
 using ECommerceWeb.Repositories.Implementaciones;
 using ECommerceWeb.Repositories.Interfaces;
@@ -37,8 +39,8 @@ namespace ECommerceWeb.WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult> Login(LoginDtoRequest request)
         {
-            LoginDtoResponse loginDtoResponse = new LoginDtoResponse();
-             
+            var response = new LoginDtoResponse();
+
             try
             {
 
@@ -75,7 +77,7 @@ namespace ECommerceWeb.WebApi.Controllers
                 SigningCredentials credentials = new SigningCredentials(
                     key
                     , SecurityAlgorithms.HmacSha256
-                 );//encrypcion Algorit
+                 );//encrypcion algorithm
 
                 JwtHeader header = new JwtHeader(credentials);
 
@@ -90,22 +92,27 @@ namespace ECommerceWeb.WebApi.Controllers
                 JwtSecurityToken token = new JwtSecurityToken(
                     header, payload);
 
-                loginDtoResponse.Token = new JwtSecurityTokenHandler().WriteToken(token);
-                loginDtoResponse.Namme = identity.Name;
+                response.Token = new JwtSecurityTokenHandler().WriteToken(token);
+                response.Namme = identity.Name;
+                response.success = true;
 
-
-                return Ok(loginDtoResponse);
+                
             }
             catch (Exception e)
             {
-                return BadRequest(e.Message);
+                response.msnError = e.Message;
+                response.success = false;
+                return BadRequest(response);
             }
+
+            return Ok(response);
 
         }
 
         [HttpPost]
         public async Task<ActionResult> Register(RegisterUserDtoRequest request)
         {
+            var response = new BaseResponse();
             try
             {
                 var identity = new EcommerseIdentity
@@ -121,7 +128,7 @@ namespace ECommerceWeb.WebApi.Controllers
 
                 if (request.Password != request.ConfirmPassword)
                 {
-                    return BadRequest("The password and confirm password are not equal");
+                    throw new Exception("The password and confirm password are not equal");
                 }
 
                 var result = await _userManager.CreateAsync(identity, request.Password);
@@ -135,7 +142,7 @@ namespace ECommerceWeb.WebApi.Controllers
                     string error = sb.ToString();
                     sb.Clear();
 
-                    return BadRequest(error);
+                    throw new Exception(error);
                 }
                 
                 //if the usre registration was successfuk we asigned the role
@@ -152,16 +159,18 @@ namespace ECommerceWeb.WebApi.Controllers
                 };
 
                 await _customerRepository.AddAsync(client);              
-
-                return Ok("User Created");
+                response.success = true;
+                
+                
 
             }
             catch (Exception e)
             {
-
-                return BadRequest(e.Message);
+                response.success = false;
+                response.msnError = e.Message;
+                return BadRequest(response);
             }
-
+            return Ok(response);
         }
 
     }

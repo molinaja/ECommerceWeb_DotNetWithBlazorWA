@@ -2,6 +2,7 @@
 using ECommerceWeb.Dto.Response;
 using ECommerceWeb.Entities;
 using ECommerceWeb.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,7 @@ namespace ECommerceWeb.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class ProductsController : ControllerBase
 {
     private readonly IProductRepository _repository;

@@ -28,13 +28,6 @@ namespace ECommerceWeb.DataAccess
             await roleManager.CreateAsync(ClientRole);
 
             //Admin User
-            //EcommerseIdentity AdminUser = new EcommerseIdentity();
-            //AdminUser.Name = "Aministrator";
-            //AdminUser.BirthDate = DateOnly.Parse("01-01-1900");
-            //AdminUser.UserName = "Admin";
-            //AdminUser.Email = "Admin@ecommerce.com";
-            //AdminUser.EmailConfirmed = true;
-
             var adminUser = new EcommerseIdentity
             {
                 Name = "Administrator",
