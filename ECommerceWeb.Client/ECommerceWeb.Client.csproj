@@ -22,11 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\JS_Utilities\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\JS_Utilities\Alerts.js" />
+    <None Include="wwwroot\JS_Utilities\stufs.js" />
   </ItemGroup>
 
 </Project>

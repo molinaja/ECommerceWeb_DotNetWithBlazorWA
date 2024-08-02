@@ -3,6 +3,8 @@
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider authenticationStateProvider
 @inject IToastService toastService
+@inject SweetAlertService Swal
+@inject IJSRuntime iJSRuntime
 
 <PageTitle>Login</PageTitle>
 
@@ -65,14 +67,14 @@
 
                                     <input class="form-control mb-3 p-4" type="text" id="username"
                                            @bind-value="loginDtoRequest.UserName" placeholder="Username" />
-                                    
+
                                     <ValidationMessage For="@(() => loginDtoRequest.UserName)" />
 
 
                                     <input placeholder="Enter password"
                                            class="form-control mb-3 p-4" aria-describedby="passwordHelpBlock" type="password" id="password"
                                            @bind-value="loginDtoRequest.Password" />
-                                    
+
                                     <ValidationMessage For="@(() => loginDtoRequest.Password)" />
 
                                     <label class="py-3 d-flex flex-wrap justify-content-between">
@@ -93,7 +95,7 @@
                                 </div>
 
                             </EditForm>
-                         
+
                         </div>
 
                     </div>
@@ -126,37 +128,55 @@
                             </div>
 
 
-                            <p class="mb-0">Or Sign-Up With Email</p>
+                            <p class="mb-0">Or Sign-Up</p>
                             <hr class="my-1">
 
-                            <form id="formSign-Up" class="form-group flex-wrap ">
+                            <EditForm Model="registerUserDtoRequest" OnValidSubmit="ValidRegister" class="form-group flex-wrap ">
                                 <div class="form-input col-lg-12 my-4">
+                                    <DataAnnotationsValidator />
 
-                                    <input type="text" id="exampleInputName" name="email"
-                                           placeholder="Your full name" class="form-control mb-3 p-4">
-                                    <input type="text" id="Sign-UpexampleInputEmail1" name="email"
-                                           placeholder="Your email address" class="form-control mb-3 p-4">
-                                    <input type="password" id="signupinputPassword1" placeholder="Set your password"
-                                           class="form-control mb-3 p-4" aria-describedby="passwordHelpBlock">
-                                    <input type="password" id="inputPassword2" placeholder="Retype your password"
-                                           class="form-control mb-3 p-4" aria-describedby="passwordHelpBlock">
+                                    <input class="form-control mb-3 p-4" type="text" id="Name"
+                                           @bind-value="registerUserDtoRequest.Name" placeholder="Name" />
+                                    <ValidationMessage For="@(() => registerUserDtoRequest.Name)" />
 
-                                    <label class="py-3 d-flex flex-wrap justify-content-between">
-                                        <div>
-                                            <input type="checkbox" required="" class="d-inline">
-                                            <span class="label-body ">Remember Me</span>
-                                        </div>
+                                    <input class="form-control mb-3 p-4" type="text" id="LastName"
+                                           @bind-value="registerUserDtoRequest.LastName" placeholder="Last Name" />
+                                    <ValidationMessage For="@(() => registerUserDtoRequest.LastName)" />
 
-                                        <div id="passwordHelpBlock" class="form-text ">
-                                            <a href="#" class="text-primary  fw-bold"> Forgot Password?</a>
-                                        </div>
-                                    </label>
+                                    <input class="form-control mb-3 p-4" type="date" id="birthDate"
+                                           @bind-value="registerUserDtoRequest.BirthDate" placeholder="BirthDate" />
+                                    <ValidationMessage For="@(() => registerUserDtoRequest.BirthDate)" />
+
+                                    <input class="form-control mb-3 p-4" type="text" id="address"
+                                           @bind-value="registerUserDtoRequest.Address" placeholder="Address" />
+                                    <ValidationMessage For="@(() => registerUserDtoRequest.BirthDate)" />
+
+                                    <input class="form-control mb-3 p-4" type="text" id="UsernameReg"
+                                           @bind-value="registerUserDtoRequest.UserName" placeholder="UserName" />
+                                    <ValidationMessage For="@(() => registerUserDtoRequest.UserName)" />
+
+                                    <input class="form-control mb-3 p-4" type="text" id="email"
+                                           @bind-value="registerUserDtoRequest.Email" placeholder="E-Mail" />
+                                    <ValidationMessage For="@(() => registerUserDtoRequest.Email)" />
+
+                                    <input class="form-control mb-3 p-4" type="password" id="passwordReg"
+                                           @bind-value="registerUserDtoRequest.Password" placeholder="Password" />
+                                    <ValidationMessage For="@(() => registerUserDtoRequest.Password)" />
+
+                                    <input class="form-control mb-3 p-4" type="password" id="repassword"
+                                           @bind-value="registerUserDtoRequest.ConfirmPassword" placeholder="Re-Password" />
+                                    <ValidationMessage For="@(() => registerUserDtoRequest.ConfirmPassword)" />
+
+
                                     <div class="d-grid my-3">
-                                        <a href="#" class="btn btn-dark btn-lg rounded-1">Sign Up</a>
+                                        <button class="btn btn-dark btn-lg rounded-1" type="submit">Register</button>
                                     </div>
 
                                 </div>
-                            </form>
+
+                            </EditForm>
+
+                            
 
                         </div>
                     </div>
@@ -221,7 +241,11 @@
 </section>
 
 @code {
+
     private LoginDtoRequest loginDtoRequest { get; set; } = new LoginDtoRequest();
+
+    private RegisterUserDtoRequest registerUserDtoRequest { get; set; } = new RegisterUserDtoRequest();
+
 
     private async Task ValidLogin()
     {
@@ -233,20 +257,71 @@
                 var auth = (AuthenticationService)authenticationStateProvider;
                 await auth.Authenticate(response);
                 navigationManager.NavigateTo("/");
-
             }
             else
             {
-                toastService.ShowError(response.msnError!);
-                //Console.WriteLine(response.msnError);
+
+                await Swal.FireAsync(
+                    new SweetAlertOptions
+                        {
+                            Position = "top-end",
+                            Icon = "warning",
+                            Title = response.msnError,
+                            ShowConfirmButton = false,
+                            Timer = 1500
+                        });
 
             }
         }
         catch (Exception ex)
         {
-            toastService.ShowError(ex.Message);
-            //Console.WriteLine(ex.Message);
+            await Swal.FireAsync(
+                    new SweetAlertOptions
+                        {
+                            Position = "top-end",
+                            Icon = "error",
+                            Title = ex.Message,
+                            ShowConfirmButton = false,
+                            Timer = 1500
+                        });
+        }
 
+    }
+
+    private async Task ValidRegister()
+    {
+        Console.WriteLine("Register Init");
+        try
+        {
+            await userProxy.Register(registerUserDtoRequest);
+
+            await Swal.FireAsync(
+                   new SweetAlertOptions
+                       {
+                           Position = "top-end",
+                           Icon = "success",
+                           Title = "Cuenta Creada con exito",
+                           ShowConfirmButton = false,
+                           Timer = 1500
+                       }
+            );
+            registerUserDtoRequest = new();      
+
+            await iJSRuntime.InvokeVoidAsync("changeTab", "nav-sign-in-tab", "nav-register-tab");
+
+        }
+        catch (Exception ex)
+        {
+
+            await Swal.FireAsync(
+                    new SweetAlertOptions
+                        {
+                            Position = "top-end",
+                            Icon = "error",
+                            Title = ex.Message,
+                            ShowConfirmButton = true,
+                            //Timer = 1500
+                        });
         }
 
     }

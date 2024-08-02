@@ -69,7 +69,7 @@
         catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadRequest)
         {
             _spinnerService.Hide();
-            // Maneja específicamente el error 400
+            
             //string errorContent = await ex.Content.ReadAsStringAsync();
             string errorContent = ex.Message.ToString();
             Console.WriteLine("Bad Request: " + errorContent);
@@ -83,14 +83,12 @@
         catch (HttpRequestException ex)
         {
             _spinnerService.Hide();
-            // Maneja otros errores HTTP
             Console.WriteLine($"Request error: {ex.Message}");
             await iJSRuntime.InvokeVoidAsync("showSimpleAlert", $"Request error: {ex.Message}");
         }
         catch (Exception ex)
         {
             _spinnerService.Hide();
-            // Maneja cualquier otro tipo de error
             Console.WriteLine($"General error: {ex.Message}");
             await iJSRuntime.InvokeVoidAsync("showSimpleAlert", $"General error: {ex.Message}");
 

@@ -1,6 +1,9 @@
-﻿using ECommerceWeb.Dto.Request;
+﻿using BlazorSpinner;
+using ECommerceWeb.Dto.Request;
 using ECommerceWeb.Dto.Response;
+using Microsoft.JSInterop;
 using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace ECommerceWeb.Client.Proxy
 {
@@ -19,10 +22,31 @@ namespace ECommerceWeb.Client.Proxy
 
         public async Task Register(RegisterUserDtoRequest request)
         {
+            string errorBodyFor400 = string.Empty;
             try
             {
                 var response = await _httpClient.PostAsJsonAsync("api/users/register", request);
+                if ((int)response.StatusCode == 400)
+                {
+                    errorBodyFor400 = await response.Content.ReadAsStringAsync();
+                }
                 response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {         
+                var Response = JsonSerializer.Deserialize<BaseResponse>(errorBodyFor400);
+               
+                Console.WriteLine(Response);
+                if (Response != null)
+                {
+                    throw new InvalidOperationException(Response.msnError);
+                }
+                else
+                {
+                    throw new InvalidOperationException(ex.Message);
+
+                }
+
             }
             catch (Exception ex)
             {
