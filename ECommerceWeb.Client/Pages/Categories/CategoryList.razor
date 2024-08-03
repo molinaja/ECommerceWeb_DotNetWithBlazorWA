@@ -1,10 +1,9 @@
 ﻿@page "/Category/List"
-
 @inject HttpClient httpClient
 @inject NavigationManager navigationManager
 @inject SweetAlertService Swal
 
-@attribute [Authorize]
+@attribute [Authorize(Roles = Statics.AdministratorRole)]
 
 ﻿<div class="container">
     <div class="row">

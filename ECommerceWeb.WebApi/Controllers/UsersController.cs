@@ -53,8 +53,10 @@ namespace ECommerceWeb.WebApi.Controllers
                 bool passCheck = await _userManager.CheckPasswordAsync(identity, request.Password);
                 if (!passCheck)
                 {
-                    throw new Exception("The user or password are incorrect");
+                    throw new Exception("The user or password are incorrect!");
                 }
+
+                var roles = await _userManager.GetRolesAsync(identity); 
 
                 DateTime ExpirationDate = DateTime.Now.AddHours(1);
 
@@ -64,8 +66,10 @@ namespace ECommerceWeb.WebApi.Controllers
                     new Claim(ClaimTypes.Name, identity.Name), 
                     new Claim(ClaimTypes.Email, identity.Email!),
                     new Claim(ClaimTypes.Expiration, ExpirationDate.ToString()),
-
+                    
                 };
+
+                claims.AddRange(roles.Select(x => new Claim(ClaimTypes.Role, x)));
 
                 //create jwt 
                 SecurityKey key = new SymmetricSecurityKey(

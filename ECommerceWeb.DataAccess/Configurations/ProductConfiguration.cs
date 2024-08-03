@@ -14,8 +14,14 @@ namespace ECommerceWeb.DataAccess.Configurations
         public void Configure(EntityTypeBuilder<Product> builder)
         {
 
-            builder.Property(p => p.Name).HasMaxLength(100);
-            
+            builder.Property(
+                p => p.Name
+            ).HasMaxLength(100);
+
+            builder.Property(
+                p => p.UrlImage
+            ).IsUnicode().HasMaxLength(5000);
+
         }
     }
 }

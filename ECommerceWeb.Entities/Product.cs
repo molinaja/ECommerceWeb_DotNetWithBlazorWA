@@ -16,4 +16,6 @@ public class Product : BaseEntity
     public int BrandId { get; set; }
 
     public Brand Brand { get; set; } = default!;
+
+    public string? UrlImage { get; set; }
 }

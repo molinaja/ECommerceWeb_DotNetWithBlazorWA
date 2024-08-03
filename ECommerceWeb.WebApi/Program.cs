@@ -2,6 +2,7 @@
 using ECommerceWeb.DataAccess;
 using ECommerceWeb.Repositories.Implementaciones;
 using ECommerceWeb.Repositories.Interfaces;
+using ECommerceWeb.WebApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,8 @@ builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IBrandRepository, BrandRepository>();
 builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
+builder.Services.AddTransient<IFileUploader, FileUploader>();
+
 
 
 

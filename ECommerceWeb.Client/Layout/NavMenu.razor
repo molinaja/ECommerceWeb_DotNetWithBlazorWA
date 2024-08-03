@@ -1,4 +1,8 @@
-﻿<div class="container-fluid">
+﻿@inject AuthenticationStateProvider authenticationStateProvider
+@inject SweetAlertService Swal
+@inject NavigationManager navigationManager
+
+<div class="container-fluid">
     <hr class="m-0">
 </div>
 
@@ -52,11 +56,18 @@
             </div>
 
             <div class="offcanvas-body justify-content-between">
-                
+
                 <ul class="navbar-nav menu-list list-unstyled d-flex gap-md-3 mb-0">
                     <li class="nav-item">
                         <NavLink href="" class="nav-link" Match="NavLinkMatch.All">Home</NavLink>
                     </li>
+                    <AuthorizeView Roles="@Statics.AdministratorRole">
+                        <Authorized>
+                            <li class="nav-item">
+                                <NavLink href="Category/listx" class="nav-link">Dashboard</NavLink>
+                            </li>
+                        </Authorized>
+                    </AuthorizeView>
 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" role="button" id="pages" data-bs-toggle="dropdown"
@@ -82,37 +93,66 @@
                                     Cart<span class="badge bg-success text-dark ms-2">PRO</span>
                                 </NavLink>
                             </li>
-                            
+
                         </ul>
                     </li>
-                    
+
                 </ul>
 
-                <div class="d-none d-lg-flex align-items-end">
-                    <ul class="d-flex justify-content-end list-unstyled m-0">
-                        <li>
-                            <a href="account.html" class="mx-3">
-                                <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="wishlist.html" class="mx-3">
-                                <iconify-icon icon="mdi:heart" class="fs-4"></iconify-icon>
-                            </a>
-                        </li>
+                <AuthorizeView>
 
-                        <li class="">
-                            <a href="#" class="mx-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart"
-                               aria-controls="offcanvasCart">
-                                <iconify-icon icon="mdi:cart" class="fs-4 position-relative"></iconify-icon>
-                                <span class="position-absolute translate-middle badge rounded-circle bg-primary pt-2">
-                                    03
-                                </span>
-                            </a>
-                        </li>
-                    </ul>
+                    <Authorized>
 
-                </div>
+                        <div class="d-none d-lg-flex align-items-end">
+                            <ul class="d-flex justify-content-end list-unstyled m-0">
+
+                                <li>
+                                    <NavLink href="account.html" class="mx-3">
+                                        @context.User.Identity!.Name
+                                        <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
+
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <a href="wishlist.html" class="mx-3">
+                                        <iconify-icon icon="mdi:heart" class="fs-4"></iconify-icon>
+                                    </a>
+                                </li>
+
+                                <li class="">
+                                    <a href="#" class="mx-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart"
+                                       aria-controls="offcanvasCart">
+                                        <iconify-icon icon="mdi:cart" class="fs-4 position-relative"></iconify-icon>
+                                        <span class="position-absolute translate-middle badge rounded-circle bg-primary pt-2">
+                                            03
+                                        </span>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <button class="btn btn-light rounded-pill" @onclick="SingOut"><i class="bi bi-door-open me-1"></i>Sing Out</button>
+                                </li>
+
+                            </ul>
+
+                        </div>
+
+                    </Authorized>
+                    <NotAuthorized>
+
+                        <div class="d-none d-lg-flex align-items-end">
+                            <ul class="d-flex justify-content-end list-unstyled m-0">
+                                <li>
+                                    <NavLink class="btn btn-light rounded-pill" href="account/Login"><i class="bi bi-box-arrow-in-right me-1"></i>Login</NavLink>
+                                </li>
+
+                            </ul>
+
+                        </div>
+
+                    </NotAuthorized>
+
+                </AuthorizeView>
 
             </div>
 
@@ -123,13 +163,32 @@
 </div>
 
 @code {
+    private async Task SingOut()
+    {
 
-    // private string? NavBarCssClass => collapseNavMenu ? null : "show";
-    // private string? NavButtonCssClass => collapseNavMenu ? "collapsed" : null;
+        var res = await Swal.FireAsync(
+            new SweetAlertOptions
+            {
+                Title = "Are you sure?",
+                Text = "You want sing out!",
+                Icon = SweetAlertIcon.Warning,
+                ShowCancelButton = true,
+                ConfirmButtonColor = "#3085d6",
+                CancelButtonColor = "#d33",
+                ConfirmButtonText = "Yes!"
+            }
+        );
+        if (res.IsConfirmed)
+        {
+            var auth = (AuthenticationService)authenticationStateProvider;
+            await auth.Authenticate(null);
+            navigationManager.NavigateTo("/", forceLoad: true);
 
-    // private void ToggleNavMenu()
-    // {
-    //     collapseNavMenu = !collapseNavMenu;
-    // }
+        }
+
+    }
+
+       
+
 
 }

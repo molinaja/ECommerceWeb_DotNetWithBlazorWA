@@ -2,6 +2,7 @@
 using ECommerceWeb.Dto.Response;
 using ECommerceWeb.Entities;
 using ECommerceWeb.Repositories.Interfaces;
+using ECommerceWeb.WebApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +15,12 @@ namespace ECommerceWeb.WebApi.Controllers;
 public class ProductsController : ControllerBase
 {
     private readonly IProductRepository _repository;
+    private readonly IFileUploader _fileUploader;
 
-    public ProductsController(IProductRepository repository)
+    public ProductsController(IProductRepository repository, IFileUploader fileUploader)
     {
         _repository = repository;
+        _fileUploader = fileUploader;
     }
 
     [HttpGet]
@@ -58,6 +61,8 @@ public class ProductsController : ControllerBase
             BrandId = request.BrandId,
         };
 
+        entity.UrlImage = await _fileUploader.UploadFileAsync(request.Base64Image, request.FileName);
+        
         await _repository.AddAsync(entity);
         
         return Created($"api/products/{entity.Id}", entity);
@@ -75,11 +80,16 @@ public class ProductsController : ControllerBase
         entity.Price = request.Price;
         entity.CategoryId = request.CategoryId;
         entity.BrandId = request.BrandId;
-        
+
+        if (!string.IsNullOrEmpty(request.Base64Image) && !string.IsNullOrEmpty(request.FileName)) {
+
+            entity.UrlImage = await _fileUploader.UploadFileAsync(request.Base64Image, request.FileName);
+        }
 
         await _repository.UpdateAsync();
 
         return Ok();
+
     }
 
     [HttpDelete("{id:int}")]
@@ -88,5 +98,6 @@ public class ProductsController : ControllerBase
         await _repository.DeleteAsync(id);
 
         return Ok();
+
     }
 }
