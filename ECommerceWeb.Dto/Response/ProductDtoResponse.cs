@@ -9,4 +9,5 @@ public class ProductDtoResponse
     public string Category { get; set; } = default!;
     public int BrandId { get; set; }
     public string Brand { get; set; } = default!;
+    public string? UrlImage { get; set; }
 }

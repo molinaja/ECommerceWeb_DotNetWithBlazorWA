@@ -36,6 +36,7 @@ public class ProductsController : ControllerBase
     {
         var entity = await _repository.ListAsync(filter ?? string.Empty);
 
+
         return Ok(entity);
     }
 
@@ -47,7 +48,19 @@ public class ProductsController : ControllerBase
         if (entity is null)
             return NotFound();
 
-        return Ok(entity);
+
+        return Ok(
+            new ProductDtoResponse { 
+                Id = entity.Id,
+                Name = entity.Name,
+                Price = entity.Price,  
+                Category = entity.Category?.Name ?? string.Empty,
+                CategoryId = entity.CategoryId,
+                Brand = entity.Brand?.Name ?? string.Empty,
+                BrandId = entity.BrandId,
+                UrlImage = entity.UrlImage,
+            }
+        );
     }
 
     [HttpPost]

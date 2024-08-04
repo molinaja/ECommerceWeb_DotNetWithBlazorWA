@@ -19,7 +19,7 @@ namespace ECommerceWeb.Dto.Request
 
         public string? FileName { get; set; } 
 
-        public string? ImageUrl { get; set; }
+        public string? UrlImage { get; set; }
 
     }
 }

@@ -25,4 +25,8 @@
     <None Include="wwwroot\JS_Utilities\stufs.js" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\assets\images\" />
+  </ItemGroup>
+
 </Project>

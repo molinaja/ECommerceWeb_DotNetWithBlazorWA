@@ -1,70 +1,122 @@
-﻿<div class="container">
-    <PageTitle>@pageTitle</PageTitle>
-    <h1 class="text-uppercase mb-2 mt-1">@pageTitle</h1>
+﻿@using System.Text.Json
+@inject SweetAlertService Swal
 
-    <EditForm Model="product" OnValidSubmit="@onBtnSubmit">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
+
+<PageTitle>@pageTitle</PageTitle>
+
+<h1 class="text-uppercase mb-2 mt-1">@pageTitle</h1>
+
+<EditForm Model="product" OnValidSubmit="@onBtnSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="container">
 
         <div class="row">
-            <div class="col-auto">
-                <label for="Name" class="form-label">Name</label>
-                <InputText class="form-control" id="Name" placeholder="Name" @bind-Value="product.Name" />
+
+            <div class="col-6">
+
+                <div class="container">
+
+                    <div class="row">
+                        <div class="col-auto">
+                            <label for="Name" class="form-label">Name</label>
+                            <InputText class="form-control" id="Name" placeholder="Name" @bind-Value="product.Name" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class=" col-auto">
+                            <label for="Price" class="form-label">Price</label>
+                            <InputNumber class="form-control" id="Price" placeholder="Price" @bind-Value="product.Price" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-auto">
+                            <label for="category" class="form-label">category:</label>
+                            <InputSelect class="form-select" id="category" @bind-Value="product.CategoryId">
+                                <option>- Select category -</option>
+                                @if (categories is not null)
+                                {
+                                    @foreach (var item in categories)
+                                    {
+                                        <option value="@item.Id">@item.Id - @item.Name</option>
+                                    }
+                                }
+                            </InputSelect>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-auto">
+                            <label for="brand" class="form-label">Brand:</label>
+                            <InputSelect class="form-select" id="brand" @bind-Value="product.BrandId">
+                                <option>- Select brand -</option>
+                                @if (brands is not null)
+                                {
+                                    @foreach (var item in brands)
+                                    {
+                                        <option value="@item.Id">@item.Id - @item.Name</option>
+                                    }
+                                }
+                            </InputSelect>
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
-        </div>
-        <div class="row">
-            <div class=" col-auto">
-                <label for="Price" class="form-label">Price</label>
-                <InputNumber class="form-control" id="Price" placeholder="Price" @bind-Value="product.Price" />
-            </div>
-        </div>
-        <div class="row">
+
             <div class="col-auto">
-                <label for="category" class="form-label">category:</label>
-                <InputSelect class="form-select" id="category" @bind-Value="product.CategoryId">
-                    <option>- Select category -</option>
-                    @if (categories is not null)
-                    {
-                        @foreach (var item in categories)
+
+                <div class="card mt-4">
+                    <div class="card-body">
+                        @if (product.Base64Image is not null)
                         {
-                            <option value="@item.Id">"@item.Id - @item.Name</option>
+                            <div style="margin: 10px">
+                                <img src="data:image/jpeg;base64,@product.Base64Image" alt="@product.Name" style="width: 400px" />
+                            </div>
                         }
-                    }
-                </InputSelect>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-auto">
-                <label for="brand" class="form-label">Brand:</label>
-                <InputSelect class="form-select" id="brand" @bind-Value="product.BrandId">
-                    <option>- Select brand -</option>
-                    @if (brands is not null)
-                    {
-                        @foreach (var item in brands)
+                        else if (string.IsNullOrEmpty(product.UrlImage))
                         {
-                            <option value="@item.Id">"@item.Id - @item.Name</option>
+                            <img src="assets/images/noproductImage1.png" alt="@product.Name" style="width: 400px" />
                         }
-                    }
-                </InputSelect>
+                        else
+                        {
+                            <img src="@product.UrlImage" alt="@product.Name" style="width: 400px" />
+                        }
+                    </div>
+                    <div class="card-footer">
+                        <InputFile accept="image/png, image/jpeg, image/webp" style="display: none" id="file" OnChange="OnFileUpload" />
+                        <label for="file" class="btn btn-secondary"><i class="bi bi-camera me-1"></i>IMAGE</label>
+                    </div>
+                </div>
+
             </div>
+
         </div>
-        <div class="row mt-4">
+
+        <div class="row row-cols-4">
+
             <div class="col-auto">
                 <div class="mb-3">
                     <button type="submit" class="btn btn-outline-success"><i class="bi bi-floppy me-1"></i>@nameBtnFormSubmit</button>
                 </div>
             </div>
+
             <div class="col-auto">
                 <div class="mb-3">
                     <NavLink class="btn btn-outline-danger " href="Product/list"><i class="bi bi-backspace me-1"></i> Return</NavLink>
                 </div>
             </div>
+
         </div>
 
-    </EditForm>
+    </div>
 
+</EditForm>
 
-</div>
 
 @code {
 
@@ -81,5 +133,25 @@
     [Parameter]
     public EventCallback onBtnSubmit { get; set; }
 
+
+    private async Task OnFileUpload(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            var size = 8 * 1024 * 1024;
+
+            var image = e.File;
+            var buffer = new byte[image.Size];
+            _ = await image.OpenReadStream(size).ReadAsync(buffer);
+
+            product.Base64Image = Convert.ToBase64String(buffer);
+            product.FileName = image.Name;
+            product.UrlImage = null;
+        }
+        catch (Exception ex)
+        {
+            await Swal.FireAsync("Error de archivo", ex.Message);
+        }
+    }
 
 }
