@@ -1,0 +1,263 @@
+﻿@page "/Detail/{id:int}"
+
+@inject IToastService toastService
+@inject IShoppingCartProxy ShoppingCart
+@inject HttpClient httpClient
+
+<section id="selling-product">
+    <div class="container my-md-5 py-5">
+        @if (productDtoResponse != null)
+        {
+
+            <div class="row g-md-5">
+
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!-- product-large-slider -->
+                            <div class="swiper product-large-slider">
+                                <div class="swiper-wrapper">
+                                    <div class="swiper-slide">
+
+                                        @if (string.IsNullOrEmpty(productDtoResponse.UrlImage))
+                                        {
+
+                                            <img src="assets/images/noproductImage1.png" alt="@productDtoResponse.Name" class="img-fluid" />
+
+                                        }
+                                        else
+                                        {
+                                            <img src="@productDtoResponse.UrlImage" alt="@productDtoResponse.Name" class="img-fluid" />
+
+                                        }
+
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-6 mt-5 ">
+                    <div class="product-info">
+                        <div class="element-header">
+                            <h2 itemprop="name" class="display-6">@productDtoResponse.Name</h2>
+                            <div class="rating-container d-flex gap-0 align-items-center">
+                                <span class="rating secondary-font">
+                                    <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
+                                    <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
+                                    <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
+                                    <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
+                                    <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
+                                    5.0
+                                </span>
+                            </div>
+                        </div>
+                        <div class="product-price pt-3 pb-3">
+                            <strong class="text-primary display-6 fw-bold">$170.00</strong><del class="ms-2">@productDtoResponse.Price</del>
+                        </div>
+                        <p>
+                            Justo, cum feugiat imperdiet nulla molestie ac vulputate scelerisque amet. Bibendum adipiscing platea
+                            blandit sit sed quam semper rhoncus. Diam ultrices maecenas consequat eu tortor orci, cras lectus mauris,
+                            cras egestas quam venenatis neque.
+                        </p>
+                        <div class="cart-wrap">
+
+                            <div class="color-options product-select">
+                                <div class="color-toggle pt-2" data-option-index="0">
+                                    <h6 class="item-title fw-bold">Color:</h6>
+                                    <ul class="select-list list-unstyled d-flex">
+                                        <li class="select-item pe-3" data-val="Gray" title="Gray">
+                                            <a href="#" class="btn btn-light active">Gray</a>
+                                        </li>
+                                        <li class="select-item pe-3" data-val="Black" title="Black">
+                                            <a href="#" class="btn btn-light">Black</a>
+                                        </li>
+                                        <li class="select-item pe-3" data-val="Blue" title="Blue">
+                                            <a href="#" class="btn btn-light">Blue</a>
+                                        </li>
+                                        <li class="select-item" data-val="Red" title="Red">
+                                            <a href="#" class="btn btn-light disabled">Red</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="swatch product-select pt-3" data-option-index="1">
+                                <h6 class="item-title fw-bold">Size:</h6>
+                                <ul class="select-list list-unstyled d-flex">
+                                    <li data-value="S" class="select-item pe-3">
+                                        <a href="#" class="btn btn-light">XL</a>
+                                    </li>
+                                    <li data-value="M" class="select-item pe-3">
+                                        <a href="#" class="btn btn-light active">L</a>
+                                    </li>
+                                    <li data-value="L" class="select-item pe-3">
+                                        <a href="#" class="btn btn-light">M</a>
+                                    </li>
+                                    <li data-value="L" class="select-item">
+                                        <a href="#" class="btn btn-light">S</a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="product-quantity pt-2">
+
+                                <div class="stock-number text-dark"><em>stock</em></div>
+
+                                <div class="stock-button-wrap">
+
+                                    <div class="input-group product-qty align-items-center w-25">
+
+                                        <span class="input-group-btn">
+                                            <button @onclick=(minusQuantity) type="button" class="quantity-left-minus btn btn-light btn-number">
+                                                -
+                                            </button>
+                                        </span>
+
+                                        <input type="text" id="quantity" name="quantity"
+                                               class="form-control input-number text-center p-2 mx-1" @bind-value="quantity">
+                                        <span class="input-group-btn">
+
+                                            <button @onclick=(plusQuantity) type="button" class="quantity-right-plus btn btn-light btn-number">
+                                                +
+                                            </button>
+
+                                        </span>
+
+                                    </div>
+
+                                    <div class="d-flex flex-wrap pt-4">
+                                        <button class="btn-cart me-3 px-4 pt-3 pb-3" @onclick="() => AddShoppingCart()">
+                                            <h5 class="text-uppercase m-0">Add to Cart</h5>
+                                        </button>
+                                        <a href="#" class="btn-wishlist px-4 pt-3 ">
+                                            <iconify-icon icon="fluent:heart-28-filled" class="fs-5"></iconify-icon>
+                                        </a>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="meta-product pt-4">
+
+                            <div class="meta-item d-flex align-items-baseline">
+                                <h6 class="item-title fw-bold no-margin pe-2">SKU:</h6>
+                                <ul class="select-list list-unstyled d-flex">
+                                    <li data-value="S" class="select-item">1223</li>
+                                </ul>
+                            </div>
+
+                            <div class="meta-item d-flex align-items-baseline">
+                                <h6 class="item-title fw-bold no-margin pe-2">Category:</h6>
+                                <ul class="select-list list-unstyled d-flex">
+                                    <li data-value="S" class="select-item">
+                                        <a href="#">Pet</a>,
+                                    </li>
+                                    <li data-value="S" class="select-item">
+                                        <a href="#">Dog</a>,
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="meta-item d-flex align-items-baseline">
+                                <h6 class="item-title fw-bold no-margin pe-2">Tags:</h6>
+                                <ul class="select-list list-unstyled d-flex">
+                                    <li data-value="S" class="select-item">
+                                        <a href="#">Clothes</a>,
+                                    </li>
+                                    <li data-value="S" class="select-item">
+                                        <a href="#">Hoodies</a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        }
+    </div>
+</section>
+
+@code {
+
+    [Parameter]
+    public int id { get; set; }
+
+    public ProductDtoResponse? productDtoResponse { get; set; }
+
+    public int quantity { get; set; } = 1;
+
+    private void plusQuantity()
+    {
+        quantity ++;
+
+    }
+
+    private void minusQuantity()
+    {
+        if (quantity >= 2)
+        {
+            quantity--;
+        }
+        
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            var res = await httpClient.GetAsync($"api/Products/{id}");
+            res.EnsureSuccessStatusCode();
+            if (res.IsSuccessStatusCode)
+            {
+                productDtoResponse = await res.Content.ReadFromJsonAsync<ProductDtoResponse>();
+
+            }
+            else
+            {
+                var errorContent = await res.Content.ReadAsStringAsync();
+                Console.WriteLine($"Error al obtener el producto: {res.StatusCode} - {errorContent}");
+                throw new HttpRequestException($"Error al obtener el producto: {res.StatusCode}");
+            }
+
+        }
+        catch (Exception e)
+        {
+            toastService.ShowError("" + e.Message);
+        }
+    }
+
+    private async Task AddShoppingCart()
+    {
+        ShoppingCartDto Cart = new ShoppingCartDto()
+            {
+                Product = productDtoResponse!
+                    ,
+                Quantity = quantity
+                    ,
+                Price = productDtoResponse!.Price
+                    ,
+                Total = quantity * productDtoResponse!.Price
+
+            };
+
+        await ShoppingCart.AddShoppingCart(Cart);
+
+
+    }
+
+
+}

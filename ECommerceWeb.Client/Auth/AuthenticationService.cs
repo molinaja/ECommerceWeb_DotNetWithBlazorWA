@@ -25,6 +25,9 @@ namespace ECommerceWeb.Client.Auth
                 return await Task.FromResult(new AuthenticationState(_anonymousUser));
             }
 
+            // Configure the token in HttpClient
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessionUser.Token);
+
             var claimsPrincipal = new ClaimsPrincipal(
                 new ClaimsIdentity(
                     new ClaimsIdentity(

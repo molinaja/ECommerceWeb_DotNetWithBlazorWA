@@ -1,6 +1,8 @@
 ﻿@inject AuthenticationStateProvider authenticationStateProvider
 @inject SweetAlertService Swal
 @inject NavigationManager navigationManager
+@inject IShoppingCartProxy shoppingCart
+@implements IDisposable  
 
 <div class="container-fluid">
     <hr class="m-0">
@@ -9,6 +11,7 @@
 <div class="container-fluid">
     <nav class="main-menu d-flex navbar navbar-expand-lg ">
 
+       @*  Menu mobile *@
         <div class="d-flex d-lg-none align-items-end mt-3">
             <ul class="d-flex justify-content-end list-unstyled m-0">
                 <li>
@@ -27,7 +30,7 @@
                        aria-controls="offcanvasCart">
                         <iconify-icon icon="mdi:cart" class="fs-4 position-relative"></iconify-icon>
                         <span class="position-absolute translate-middle badge rounded-circle bg-primary pt-2">
-                            03
+                            @ShowQuantityProducts()
                         </span>
                     </a>
                 </li>
@@ -44,11 +47,13 @@
 
         </div>
 
+        @* hamburger button *@
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
                 aria-controls="offcanvasNavbar">
             <span class="navbar-toggler-icon"></span>
         </button>
 
+        @* normal menu *@
         <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
 
             <div class="offcanvas-header justify-content-center">
@@ -64,7 +69,7 @@
                     <AuthorizeView Roles="@Statics.AdministratorRole">
                         <Authorized>
                             <li class="nav-item">
-                                <NavLink href="Category/listx" class="nav-link">Dashboard</NavLink>
+                                <NavLink href="Category/list" class="nav-link">Dashboard</NavLink>
                             </li>
                         </Authorized>
                     </AuthorizeView>
@@ -86,6 +91,11 @@
                             <li>
                                 <NavLink href="Product/list" class="dropdown-item">
                                     Product
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink href="detail/1" class="dropdown-item">
+                                    Detail<span class="badge bg-success text-dark ms-2">TEST</span>
                                 </NavLink>
                             </li>
                             <li>
@@ -124,7 +134,7 @@
                                        aria-controls="offcanvasCart">
                                         <iconify-icon icon="mdi:cart" class="fs-4 position-relative"></iconify-icon>
                                         <span class="position-absolute translate-middle badge rounded-circle bg-primary pt-2">
-                                            03
+                                            @ShowQuantityProducts()
                                         </span>
                                     </a>
                                 </li>
@@ -163,6 +173,7 @@
 </div>
 
 @code {
+
     private async Task SingOut()
     {
 
@@ -188,7 +199,21 @@
 
     }
 
-       
+    private int ShowQuantityProducts()
+    {
+        return shoppingCart.QuantityProducts();
 
+    }
+
+    protected override void OnInitialized()
+    {
+        shoppingCart.RefreshView += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        shoppingCart.RefreshView += StateHasChanged;
+
+    }
 
 }

@@ -79,6 +79,18 @@
 
     protected override async Task OnInitializedAsync()
     {
+
+        // Verificar si el token Bearer está configurado en el HttpClient
+        if (httpClient.DefaultRequestHeaders.Authorization != null &&
+            httpClient.DefaultRequestHeaders.Authorization.Scheme == "Bearer")
+        {
+            Console.WriteLine("Token Bearer está configurado.");
+        }
+        else
+        {
+            Console.WriteLine("Token Bearer NO está configurado.");
+        }
+
         categories = await httpClient.GetFromJsonAsync<ICollection<CategoryDtoResponse>>("api/Categories");
         //Console.WriteLine("My debug output.");
 

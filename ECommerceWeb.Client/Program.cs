@@ -1,4 +1,5 @@
 
+using Blazored.LocalStorage;
 using Blazored.SessionStorage;
 using Blazored.Toast;
 using BlazorSpinner;
@@ -18,10 +19,12 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddScoped<SpinnerService>();
 builder.Services.AddScoped<LoadingService>();
 builder.Services.AddScoped<IUserProxy, UserProxy>();
+builder.Services.AddScoped<IShoppingCartProxy, ShoppingCartProxy>();
 builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationService>();
 
 builder.Services.AddSweetAlert2();
 builder.Services.AddBlazoredSessionStorage();
+builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredToast();
 
