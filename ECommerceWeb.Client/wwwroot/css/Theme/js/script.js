@@ -58,30 +58,38 @@ var initSwiper = function () {
 
 function initializeIsotope() {
 
-    // Initialize Isotope
-    var $container = $('.isotope-container').isotope({
-        // options
-        itemSelector: '.item',
-        layoutMode: 'masonry'
-    });
+    setTimeout(function () {
+        // Initialize Isotope
+        var $container = $('.isotope-container').isotope({
+            // options
+            itemSelector: '.item',
+            layoutMode: 'masonry'
+        });
 
-    containerIsotope = $container;
+        containerIsotope = $container;
+    }, 500);
 
 }
 
 function filterIsotope(filterValue) {
-    
+
+    console.log('filtro' + filterValue)
     if (containerIsotope) {
-        containerIsotope.isotope({ filter: filterValue });
+        if (filterValue === ".ALL") {
+            containerIsotope.isotope({ filter: '*' });
+        } else {
+            containerIsotope.isotope({ filter: filterValue });
+
+        }
 
     }
- 
+
 }
 
 function initializeScripts() {
 
     initSwiper();
-    initializeIsotope() 
+    initializeIsotope()
 
     // product single page
     var thumb_slider = new Swiper(".product-thumbnail-slider", {

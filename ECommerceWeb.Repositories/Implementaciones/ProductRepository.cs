@@ -28,6 +28,8 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
                 Price = p.Price,
                 Category = p.Category.Name,
                 Brand = p.Brand.Name,
+                UrlImagen = p.UrlImage,
+
             })
             .AsQueryable().ToListAsync();
 
@@ -43,11 +45,12 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    Price = x.Price,
-                    Brand = x.Brand.Name,
+                    CategoryId = x.CategoryId,
                     BrandId = x.BrandId,
+                    Price = x.Price,
                     Category = x.Category.Name,
-                    CategoryId = x.CategoryId, 
+                    Brand = x.Brand.Name,
+                    UrlImagen = x.UrlImage,
                 })
                 .ToListAsync();
     }

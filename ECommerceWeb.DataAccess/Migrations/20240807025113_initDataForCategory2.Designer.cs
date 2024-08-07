@@ -4,6 +4,7 @@ using ECommerceWeb.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerceWeb.DataAccess.Migrations
 {
     [DbContext(typeof(EcommerceDbContext))]
-    partial class EcommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240807025113_initDataForCategory2")]
+    partial class initDataForCategory2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -162,7 +165,6 @@ namespace ECommerceWeb.DataAccess.Migrations
                             Id = 1,
                             Description = "Foodies in general",
                             Name = "Foodies",
-                            icon = "ph:bowl-food",
                             state = true
                         },
                         new
@@ -170,7 +172,6 @@ namespace ECommerceWeb.DataAccess.Migrations
                             Id = 2,
                             Description = "bird Section",
                             Name = "Bird Shop",
-                            icon = "ph:bird",
                             state = true
                         },
                         new
@@ -178,15 +179,13 @@ namespace ECommerceWeb.DataAccess.Migrations
                             Id = 3,
                             Description = "Dog Section",
                             Name = "Dog Shop",
-                            icon = "ph:dog",
                             state = true
                         },
                         new
                         {
                             Id = 4,
-                            Description = "Fish Section",
+                            Description = "Fosi Section",
                             Name = "Fish Shop",
-                            icon = "ph:fish",
                             state = true
                         },
                         new
@@ -194,7 +193,6 @@ namespace ECommerceWeb.DataAccess.Migrations
                             Id = 5,
                             Description = "Cat Section",
                             Name = "Cat Shop",
-                            icon = "ph:cat",
                             state = true
                         },
                         new
@@ -202,7 +200,6 @@ namespace ECommerceWeb.DataAccess.Migrations
                             Id = 6,
                             Description = "Services in place",
                             Name = "Services",
-                            icon = "ph:call-bell",
                             state = true
                         });
                 });

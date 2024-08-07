@@ -23,23 +23,50 @@ public class ProductsController : ControllerBase
         _fileUploader = fileUploader;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> Get()
     {
         var collection = await _repository.ListActiveAsync();
 
-        return Ok(collection);
+        var res = collection.Select(p => new ProductDtoResponse
+        {
+            Id = p.Id,
+            Name = p.Name,
+            Price = p.Price,
+            Category = p.Category,
+            CategoryId = p.CategoryId,
+            Brand = p.Brand,
+            BrandId = p.BrandId,
+            UrlImage = p.UrlImagen,
+
+        }).ToList();
+
+        return Ok(res);
     }
 
+    [AllowAnonymous]
     [HttpGet("filters")]
     public async Task<IActionResult> Get(string? filter)
     {
         var entity = await _repository.ListAsync(filter ?? string.Empty);
 
+        var res = entity.Select( p => new ProductDtoResponse {
+        Id = p.Id,
+        Name = p.Name,  
+        Price = p.Price,
+        Category = p.Category,
+        CategoryId = p.CategoryId,
+        Brand = p.Brand,
+        BrandId = p.BrandId,
+        UrlImage = p.UrlImagen,
 
-        return Ok(entity);
+        }).ToList();
+
+        return Ok(res);
     }
 
+    [AllowAnonymous]
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Get(int id)
     {

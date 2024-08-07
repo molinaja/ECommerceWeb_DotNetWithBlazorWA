@@ -21,6 +21,7 @@ namespace ECommerceWeb.WebApi.Controllers
 
         // GET: api/Categories
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Get()
         {
             var categories = await _repository.ListActiveAsync();
@@ -28,6 +29,7 @@ namespace ECommerceWeb.WebApi.Controllers
             return Ok(categories);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
         {

@@ -2,35 +2,6 @@ function showSimpleAlert(message) {
     alert(message);
 }
 
-window.addClassById = (elementId, className) => {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.classList.add(className);
-    }
-};
-
-window.removeClassById = (elementId, className) => {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.classList.remove(className);
-    }
-};
-
-window.setAriaSelectedById = (elementId, value) => {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.setAttribute('aria-selected', value);
-    }
-};
-
-window.simulateClickById = (elementId) => {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.click();
-    }
-    console.log("click!")
-};
-
 window.changeTab = (tabIdToActivate, tabIdToDeactivate) => {
     const tabToActivate = document.getElementById(tabIdToActivate);
     const tabToDeactivate = document.getElementById(tabIdToDeactivate);

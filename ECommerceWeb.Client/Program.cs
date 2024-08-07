@@ -20,6 +20,7 @@ builder.Services.AddScoped<SpinnerService>();
 builder.Services.AddScoped<LoadingService>();
 builder.Services.AddScoped<IUserProxy, UserProxy>();
 builder.Services.AddScoped<IShoppingCartProxy, ShoppingCartProxy>();
+builder.Services.AddScoped<IProductProxy, ProductProxy>();
 builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationService>();
 
 builder.Services.AddSweetAlert2();

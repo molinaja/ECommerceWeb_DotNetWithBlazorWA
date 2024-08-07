@@ -11,4 +11,6 @@ public class Category : BaseEntity
     [StringLength(100)]
     public string? Description { get; set; }
 
+    public string? icon { get; set; }
+
 }

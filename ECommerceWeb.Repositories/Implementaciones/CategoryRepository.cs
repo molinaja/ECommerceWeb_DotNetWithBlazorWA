@@ -22,7 +22,9 @@ namespace ECommerceWeb.Repositories.Implementaciones
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    Description = x.Description
+                    Description = x.Description,
+                    icon = x.icon,
+                   
                 })
                 .ToListAsync();
         }

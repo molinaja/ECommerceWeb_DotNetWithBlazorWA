@@ -9,4 +9,5 @@ public class ProductInfo
     public string Category { get; set; } = default!;
     public string Brand { get; set; } = default!;
     public int BrandId { get; set; }
+    public string? UrlImagen { get; set; }
 }

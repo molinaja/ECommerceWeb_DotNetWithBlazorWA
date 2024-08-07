@@ -58,7 +58,7 @@
                             </div>
                         </div>
                         <div class="product-price pt-3 pb-3">
-                            <strong class="text-primary display-6 fw-bold">$170.00</strong><del class="ms-2">@productDtoResponse.Price</del>
+                            <strong class="text-primary display-6 fw-bold">$@productDtoResponse.Price</strong><del class="ms-2">@productDtoResponse.Price</del>
                         </div>
                         <p>
                             Justo, cum feugiat imperdiet nulla molestie ac vulputate scelerisque amet. Bibendum adipiscing platea
@@ -229,8 +229,8 @@
             else
             {
                 var errorContent = await res.Content.ReadAsStringAsync();
-                Console.WriteLine($"Error al obtener el producto: {res.StatusCode} - {errorContent}");
-                throw new HttpRequestException($"Error al obtener el producto: {res.StatusCode}");
+                Console.WriteLine($"Failure in getting the product: {res.StatusCode} - {errorContent}");
+                throw new HttpRequestException($"Failure in getting the product:{res.StatusCode}");
             }
 
         }

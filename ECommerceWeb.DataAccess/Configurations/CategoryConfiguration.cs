@@ -15,9 +15,14 @@ namespace ECommerceWeb.DataAccess.Configurations
             // Data seeding
             builder.HasData(new List<Category>
             {
-                new() { Id = 1, Name = "Celulares", Description = "Celulares de Alta gama" },
-                new() { Id = 2, Name = "Televisores", Description = "Electrodomesticos para el hogar" },
-                new() { Id = 3, Name = "Computadoras Portátiles", Description = "Solo Laptops" },
+                new() { Id = 1, Name = "Foodies", Description = "Foodies in general", icon="ph:bowl-food" },
+                new() { Id = 2, Name = "Bird Shop", Description = "bird Section", icon="ph:bird" },
+                new() { Id = 3, Name = "Dog Shop", Description = "Dog Section", icon="ph:dog" },
+                new() { Id = 4, Name = "Fish Shop", Description = "Fish Section", icon="ph:fish" },
+                new() { Id = 5, Name = "Cat Shop", Description = "Cat Section", icon="ph:cat" },
+                new() { Id = 6, Name = "Services", Description = "Services in place", icon="ph:call-bell" },
+
+
             });
         }
     }
