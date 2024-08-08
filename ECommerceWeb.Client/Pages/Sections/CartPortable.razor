@@ -1,0 +1,83 @@
+@inject IShoppingCartProxy shoppingCart
+
+
+<section id="CartPortable">
+
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasCart" aria-labelledby="My Cart">
+        <div class="offcanvas-header justify-content-center">
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="order-md-last">
+                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-primary">Your cart</span>
+
+                    @if (cart != null && cart.Count > 0)
+                    {
+                        <span class="badge bg-primary rounded-circle pt-2">
+                           @cart.Count.ToString()
+                        </span>
+
+                    }
+                    else
+                    {
+                        <span class="badge bg-primary rounded-circle pt-2">
+                          0
+                        </span>
+                    }
+                </h4>
+
+                @if (cart != null && cart.Count >0)
+                {
+
+                    <ul class="list-group mb-3">
+                        @foreach (var item in cart)
+                        {
+                            <li class="list-group-item d-flex justify-content-between lh-sm">
+                                <div>
+                                    <h6 class="my-0">@item.Product.Name</h6>
+                                    <small class="text-body-secondary">Quantity @item.Quantity</small>
+                                    <small class="text-body-secondary">Unitary Price $@item.Product.Price</small>
+                                </div>
+                                <span class="text-body-secondary">Total $@item.Total.ToString()</span>
+                            </li>
+                        }
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span class="fw-bold">Total (USD)</span>
+                            <strong>$@getTotalCart()</strong>
+                        </li>
+                    </ul>
+
+                    <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout
+                    </button>
+                }
+                else
+                {
+                    <span class="fw-bold">Your cart is empty</span>
+                    
+                }
+
+            </div>
+        </div>
+    </div>
+
+</section>
+
+@code {
+
+    [Parameter]
+    public ICollection<ShoppingCartDto>? cart { get; set; }
+
+    private double getTotalCart()
+    {
+        double res = 0;
+        if (cart != null && cart.Count >0)
+        {
+            foreach (var item in cart)
+            {
+                res += item.Total;
+            }
+        }
+        return res;
+    }
+}

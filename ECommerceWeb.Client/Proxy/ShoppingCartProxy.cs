@@ -82,5 +82,6 @@ namespace ECommerceWeb.Client.Proxy
             return await _localStorageService.GetItemAsync<ICollection<ShoppingCartDto>>(_LocalStorageNameShoppingCart)
                 ?? new List<ShoppingCartDto>();
         }
+
     }
 }

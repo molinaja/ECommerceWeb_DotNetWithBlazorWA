@@ -2,56 +2,19 @@
 @inject SweetAlertService Swal
 @inject NavigationManager navigationManager
 @inject IShoppingCartProxy shoppingCart
-@implements IDisposable  
+@implements IDisposable
 
 <div class="container-fluid">
     <hr class="m-0">
 </div>
 
 <div class="container-fluid">
+
+     <CartPortable cart="cart"/>
+
     <nav class="main-menu d-flex navbar navbar-expand-lg ">
 
-       @*  Menu mobile *@
-        <div class="d-flex d-lg-none align-items-end mt-3">
-            <ul class="d-flex justify-content-end list-unstyled m-0">
-                <li>
-                    <a href="account.html" class="mx-3">
-                        <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
-                    </a>
-                </li>
-                <li>
-                    <a href="wishlist.html" class="mx-3">
-                        <iconify-icon icon="mdi:heart" class="fs-4"></iconify-icon>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#" class="mx-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart"
-                       aria-controls="offcanvasCart">
-                        <iconify-icon icon="mdi:cart" class="fs-4 position-relative"></iconify-icon>
-                        <span class="position-absolute translate-middle badge rounded-circle bg-primary pt-2">
-                            @ShowQuantityProducts()
-                        </span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#" class="mx-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSearch"
-                       aria-controls="offcanvasSearch">
-                        <iconify-icon icon="tabler:search" class="fs-4"></iconify-icon>
-                        <span></span>
-
-                    </a>
-                </li>
-            </ul>
-
-        </div>
-
-        @* hamburger button *@
-        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
-                aria-controls="offcanvasNavbar">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <NavMenuMobile ShowQuantityProducts="ShowQuantityProducts()"/>
 
         @* normal menu *@
         <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
@@ -109,15 +72,21 @@
 
                 </ul>
 
-                <AuthorizeView>
-
-                    <Authorized>
-
-                        <div class="d-none d-lg-flex align-items-end">
-                            <ul class="d-flex justify-content-end list-unstyled m-0">
-
+                <div class="d-none d-lg-flex align-items-end">
+                    <ul class="d-flex justify-content-end list-unstyled m-0">
+                        <li class="">
+                            <NavLink href="#" class="mx-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart"
+                                     aria-controls="offcanvasCart">
+                                <iconify-icon icon="mdi:cart" class="fs-4 position-relative"></iconify-icon>
+                                <span class="position-absolute translate-middle badge rounded-circle bg-primary pt-2">
+                                    @ShowQuantityProducts()                                
+                                </span>
+                            </NavLink>
+                        </li>
+                        <AuthorizeView>
+                            <Authorized>
                                 <li>
-                                    <NavLink href="account.html" class="mx-3">
+                                    <NavLink href="#" class="mx-3">
                                         @context.User.Identity!.Name
                                         <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
 
@@ -129,40 +98,26 @@
                                     </a>
                                 </li>
 
-                                <li class="">
-                                    <a href="#" class="mx-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart"
-                                       aria-controls="offcanvasCart">
-                                        <iconify-icon icon="mdi:cart" class="fs-4 position-relative"></iconify-icon>
-                                        <span class="position-absolute translate-middle badge rounded-circle bg-primary pt-2">
-                                            @ShowQuantityProducts()
-                                        </span>
-                                    </a>
-                                </li>
-
                                 <li>
-                                    <button class="btn btn-light rounded-pill" @onclick="SingOut"><i class="bi bi-door-open me-1"></i>Sing Out</button>
+                                    <button class="btn btn-light rounded-pill" @onclick="SingOut"><i class="bi bi-door-open me-1">
+                                    </i>Sing Out</button>
                                 </li>
 
-                            </ul>
-
-                        </div>
-
-                    </Authorized>
-                    <NotAuthorized>
-
-                        <div class="d-none d-lg-flex align-items-end">
-                            <ul class="d-flex justify-content-end list-unstyled m-0">
+                            </Authorized>
+                        </AuthorizeView>
+                        <AuthorizeView>
+                            <NotAuthorized>
                                 <li>
-                                    <NavLink class="btn btn-light rounded-pill" href="account/Login"><i class="bi bi-box-arrow-in-right me-1"></i>Login</NavLink>
+                                    <NavLink class="btn btn-light rounded-pill" href="account/Login"><i class="bi bi-box-arrow-in-right me-1">
+                                    </i>Login</NavLink>
                                 </li>
+                            </NotAuthorized>
+                        </AuthorizeView>
+                    </ul>
 
-                            </ul>
+                </div>
 
-                        </div>
 
-                    </NotAuthorized>
-
-                </AuthorizeView>
 
             </div>
 
@@ -174,20 +129,22 @@
 
 @code {
 
+    public ICollection<ShoppingCartDto>? cart { get; set; }
+
     private async Task SingOut()
     {
 
         var res = await Swal.FireAsync(
             new SweetAlertOptions
-            {
-                Title = "Are you sure?",
-                Text = "You want sing out!",
-                Icon = SweetAlertIcon.Warning,
-                ShowCancelButton = true,
-                ConfirmButtonColor = "#3085d6",
-                CancelButtonColor = "#d33",
-                ConfirmButtonText = "Yes!"
-            }
+                {
+                    Title = "Are you sure?",
+                    Text = "You want sing out!",
+                    Icon = SweetAlertIcon.Warning,
+                    ShowCancelButton = true,
+                    ConfirmButtonColor = "#3085d6",
+                    CancelButtonColor = "#d33",
+                    ConfirmButtonText = "Yes!"
+                }
         );
         if (res.IsConfirmed)
         {
@@ -201,19 +158,32 @@
 
     private int ShowQuantityProducts()
     {
+
         return shoppingCart.QuantityProducts();
 
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        shoppingCart.RefreshView += StateHasChanged;
+        shoppingCart.RefreshView += OnCartChanged;
+        await LoadCart();
+    }
+
+    private async void OnCartChanged()
+    {
+        await LoadCart();
+    }
+
+    private async Task LoadCart()
+    {
+        cart = await shoppingCart.GetShoppingCart();
+        StateHasChanged();
     }
 
     public void Dispose()
     {
-        shoppingCart.RefreshView += StateHasChanged;
-
+        shoppingCart.RefreshView += OnCartChanged;
+      
     }
 
 }

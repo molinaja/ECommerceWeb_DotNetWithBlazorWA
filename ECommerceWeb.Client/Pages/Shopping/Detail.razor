@@ -212,13 +212,15 @@
         {
             quantity--;
         }
-        
+
     }
 
     protected override async Task OnParametersSetAsync()
     {
         try
         {
+            quantity = 1;
+
             var res = await httpClient.GetAsync($"api/Products/{id}");
             res.EnsureSuccessStatusCode();
             if (res.IsSuccessStatusCode)
@@ -256,8 +258,6 @@
 
         await ShoppingCart.AddShoppingCart(Cart);
 
-
     }
-
 
 }
