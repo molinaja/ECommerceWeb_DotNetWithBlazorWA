@@ -21,5 +21,5 @@ window.changeTab = (tabIdToActivate, tabIdToDeactivate) => {
             targetToActivate.classList.add('show', 'active');
         }
     }
-    //console.log("click!")
+
 };

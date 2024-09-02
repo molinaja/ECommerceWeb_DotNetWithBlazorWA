@@ -10,6 +10,8 @@
 
 <BannerPrincipal />
 
+
+
 @if (Products != null && Products.Count != 0)
 {
 
@@ -59,14 +61,39 @@
 
             </div>
 
-            <div>
-                <a href="#" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1">
-                    shop now
-                    <svg width="24" height="24" viewBox="0 0 24 24" class="mb-1">
-                        <use xlink:href="#arrow-right"></use>
-                    </svg>
-                </a>
+            <div class="row">
+                <div class="col-4 mb-2">
+
+                    <a href="#" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1">
+                        shop now
+                        <svg width="24" height="24" viewBox="0 0 24 24" class="mb-1">
+                            <use xlink:href="#arrow-right"></use>
+                        </svg>
+                    </a>
+
+                </div>
             </div>
+
+            <div class="row">
+               <div class="col-4 mb-2">
+
+                    <div class="widget-menu">
+                        <div class="widget-search-bar">
+                            <div class="search-bar border rounded-2 border-dark-subtle pe-3">
+                                <div id="search-form" class="text-center d-flex align-items-center" action="" method="">
+
+                                    <input @bind-value="Search" type="search" class="form-control border-0 bg-transparent" placeholder="Search for products" />
+                                    <button @onclick="GetCatalogProducts" type="button" class="btn btn-outline-success"><i class="bi bi-search" aria-label="search"></i> </button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+               </div>
+            </div>
+
+
 
             <div class="isotope-container row">
 
@@ -149,6 +176,7 @@
 
 
 @code {
+
     const string categoryALL = "ALL";
     private string activeCategory = "ALL";
     public ICollection<ProductDtoResponse> Products { get; set; } = default!;
@@ -185,6 +213,8 @@
 
     private async Task GetCatalogProducts()
     {
+        Console.WriteLine("cargando prodductos");
+        Console.WriteLine(Search);
         try
         {
             IsLoading = true;
@@ -194,15 +224,14 @@
         {
 
             await Swal.FireAsync(
-                   new SweetAlertOptions
-                       {
-                           Position = "top-end",
-                           Icon = "errpr",
-                           Title = e.Message,
-                           ShowConfirmButton = false,
-                           Timer = 1500
-                       }
-            );
+                    new SweetAlertOptions
+                        {
+                            Position = "top-end",
+                            Icon = "warning",
+                            Title = e.Message,
+                            ShowConfirmButton = false,
+                            Timer = 1500
+                        });
 
         }
         finally
@@ -210,6 +239,7 @@
             IsLoading = false;
 
         }
+        Console.WriteLine(Products.Count.ToString());
 
     }
 

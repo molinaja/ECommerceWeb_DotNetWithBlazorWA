@@ -73,7 +73,7 @@ function initializeIsotope() {
 
 function filterIsotope(filterValue) {
 
-    console.log('filtro' + filterValue)
+
     if (containerIsotope) {
         if (filterValue === ".ALL") {
             containerIsotope.isotope({ filter: '*' });

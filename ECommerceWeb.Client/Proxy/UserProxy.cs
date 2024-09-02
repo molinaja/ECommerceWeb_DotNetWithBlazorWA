@@ -36,7 +36,7 @@ namespace ECommerceWeb.Client.Proxy
             {         
                 var Response = JsonSerializer.Deserialize<BaseResponse>(errorBodyFor400);
                
-                Console.WriteLine(Response);
+                
                 if (Response != null)
                 {
                     throw new InvalidOperationException(Response.msnError);

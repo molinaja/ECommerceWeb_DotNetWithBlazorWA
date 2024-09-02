@@ -48,7 +48,7 @@ namespace ECommerceWeb.Client.Proxy
         {
             try
             {
-                var res = await httpClient.GetAsync($"api/Products/filters{Filtro}");
+                var res = await httpClient.GetAsync($"api/Products/filters?filter={Filtro}");
                 res.EnsureSuccessStatusCode();
                 if (res.IsSuccessStatusCode)
                 {
