@@ -1,0 +1,66 @@
+﻿@page "/Cart/PreCheckOut"
+
+@inject IShoppingCartProxy shoppingCart
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+@inject SweetAlertService Swal
+
+<h3>Cart</h3>
+
+@code {
+
+
+    public ICollection<ShoppingCartDto>? cartList { get; set; } = default!;
+    public ShoppingCartDto shoppingCartDto { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        cartList = await shoppingCart.GetShoppingCart ();
+    }
+
+    private void SubtractElement(int id)
+    {
+
+        var ele = cartList!.First<ShoppingCartDto>(
+            i => i.Product.Id == id
+        );   
+
+        if (ele.Quantity - 1 > 0)
+        {
+            ele.Quantity--;
+            ele.Total = ele.Quantity * ele.Price;
+        }else
+        {
+            cartList!.Remove(ele);
+        }
+
+    }
+
+    private void AddElement(int id)
+    {
+        var ele = cartList!.First<ShoppingCartDto>(
+                i => i.Product.Id == id
+            );
+
+        ele.Quantity++;
+        ele.Total = ele.Quantity * ele.Price;
+
+    }
+
+    private void AddManuallyQueantity(int id, int quantity)
+    {
+        var ele = cartList!.First<ShoppingCartDto>(
+            i => i.Product.Id == id
+        );
+        if (quantity >0)
+        {
+            ele.Quantity = quantity;
+            ele.Total = ele.Quantity * ele.Price;
+        }else
+        {
+            cartList!.Remove(ele);
+        }
+    
+    }
+
+}
