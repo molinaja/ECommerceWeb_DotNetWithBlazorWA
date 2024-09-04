@@ -5,7 +5,208 @@
 @inject NavigationManager navigationManager
 @inject SweetAlertService Swal
 
-<h3>Cart</h3>
+<section id="cart" class="my-5 py-5">
+    <div class="container">
+        @if (cartList != null)
+        {
+
+            <div class="row g-md-5">
+
+                <div class="col-md-8 pe-md-5">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="card-title text-uppercase">Product</th>
+                                <th scope="col" class="card-title text-uppercase">Price</th>
+                                <th scope="col" class="card-title text-uppercase">Quantity</th>
+                                <th scope="col" class="card-title text-uppercase">Subtotal</th>
+                                <th scope="col" class="card-title text-uppercase"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in cartList)
+                            {
+                                <tr>
+
+                                    <td scope="row" class="py-4">
+                                        <div class="cart-info d-flex flex-wrap align-items-center ">
+                                            <div class="col-lg-3">
+                                                <div class="card-image">
+                                                    @if (string.IsNullOrEmpty(item.Product.UrlImage))
+                                                    {
+                                                        <a href="detail/@item.Product.Id">
+                                                            <img src="assets/images/noproductImage1.png"
+                                                                 class="img-fluid rounded-4" alt="@item.Product.Name">
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a href="detail/@item.Product.Id">
+                                                            <img src="@item.Product.UrlImage"
+                                                                 class="img-fluid rounded-4" alt="@item.Product.Name">
+                                                        </a>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-9">
+                                                <div class="card-detail ps-3">
+                                                    <h5 class="card-title">
+                                                        <a href="#" class="text-decoration-none">@item.Product.Name</a>
+                                                    </h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td class="py-4 align-middle">
+                                        <div class="total-price">
+                                            <span class="secondary-font fw-medium">@item.Price.ToString("N2")</span>
+                                        </div>
+                                    </td>
+
+                                    <td class="py-4 align-middle">
+                                        <div class="input-group product-qty align-items-center w-50">
+                                            <span class="input-group-btn">
+                                                <button type="button" @onclick="() => SubtractElement(item.Product.Id)"
+                                                        class="quantity-right-plus btn btn-light btn-number">
+                                                    <i class="bi bi-dash"></i>
+                                                </button>
+                                            </span>
+                                            <input type="text" id="quantity" name="quantity"
+                                                   class="form-control input-number text-center p-2 mx-1"
+                                                   value="@item.Quantity"
+                                                   @oninput="(e) => UpdateQuantity(item.Product.Id, int.Parse(e.Value!.ToString()!))" />
+
+                                            <span class="input-group-btn">
+                                                <button type="button" @onclick="() => AddElement(item.Product.Id)"
+                                                        class="quantity-right-plus btn btn-light btn-number">
+                                                    <i class="bi bi-plus"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </td>
+
+                                    <td class="py-4 align-middle">
+                                        <div class="total-price">
+                                            <span class="secondary-font fw-medium">@item.Total.ToString("N2")</span>
+                                        </div>
+                                    </td>
+
+                                    <td class="py-4 align-middle">
+                                        <div class="cart-remove">
+                                            <button type="button" @onclick="() => DeleteItem(item.Product.Id)" class="quantity-right-plus btn btn-light btn-number">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="cart Total" class="col-md-4">
+                    <div class="cart-totals">
+                        <h2 class="pb-4">Cart Total</h2>
+                        <div class="total-price pb-4">
+                            <table cellspacing="0" class="table text-uppercase">
+                                <tbody>
+                                    <tr class="subtotal pt-2 pb-2 border-top border-bottom">
+                                        <th>Subtotal</th>
+                                        <td data-title="Subtotal">
+                                            <span class="price-amount amount text-dark ps-5">
+                                                <bdi>
+                                                    <span class="price-currency-symbol">$</span>
+                                                    @cartList.Sum(Item => Item.Total).ToString("N2")
+                                                </bdi>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr class="order-total pt-2 pb-2 border-bottom">
+                                        <th>IVA</th>
+                                        <td data-title="IVA">
+                                            <span class="price-amount amount text-dark ps-5">
+                                                <bdi>
+                                                    <span class="price-currency-symbol">$</span>0
+                                                </bdi>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr class="order-total pt-2 pb-2 border-bottom">
+                                        <th>Total</th>
+                                        <td data-title="Total">
+                                            <span class="price-amount amount text-dark ps-5">
+                                                <bdi>
+                                                    <span class="price-currency-symbol">$</span>
+                                                    @cartList.Sum(Item => Item.Total).ToString("N2")
+
+                                                </bdi>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="button-wrap row g-2">
+                            <div class="col-md-6">
+                                <button class="btn btn-dark btn-lg rounded-1 fs-6 p-3 w-100">Update Cart</button>
+                            </div>
+                            <div class="col-md-6">
+                                <button class="btn btn-dark btn-lg rounded-1 fs-6 p-3 w-100">
+                                    Continue To
+                                    Shop
+                                </button>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="checkout.html"
+                                   class="btn btn-primary p-3 text-uppercase rounded-1 w-100">Proceed to checkout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        }
+
+        <section class="shopify-cart checkout-wrap">
+            <div class="container py-5 my-5">
+                <EditForm class="form-group">
+                    <div class="row d-flex flex-wrap">
+
+                        <div class="row g-md-5">
+
+                            <div class="col-md-8 pe-md-5">
+                                <h2 class="text-dark pb-3">Billing Details</h2>
+                                <div class="billing-details">
+
+                                    <label for="fname">Card Name*</label>
+                                    <input type="text" id="fname" name="fname" class="form-control mt-2 mb-4 ps-3">
+
+                                    <label for="lnumber">Card Number*</label>
+                                    <input type="tel" name="cardNumber" id="lnumber" maxlength="19" class="form-control mt-2 mb-4 ps-3">
+
+                                    <label for="cvalidity">Validity*</label>
+                                    <input type="text" id="cvalidity" name="Validity" class="form-control mt-2 mb-4">
+
+                                    <label for="ccvv">CVV*</label>
+                                    <input type="text" id="ccvv" name="ccvv" class="form-control mt-2 mb-4">
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </EditForm>
+            </div>
+        </section>
+
+    </div>
+</section>
 
 @code {
 
@@ -15,23 +216,26 @@
 
     protected override async Task OnInitializedAsync()
     {
-        cartList = await shoppingCart.GetShoppingCart ();
+        cartList = await shoppingCart.GetShoppingCart();
     }
 
-    private void SubtractElement(int id)
+    private async Task SubtractElement(int id)
     {
 
         var ele = cartList!.First<ShoppingCartDto>(
             i => i.Product.Id == id
-        );   
+        );
 
         if (ele.Quantity - 1 > 0)
         {
             ele.Quantity--;
             ele.Total = ele.Quantity * ele.Price;
-        }else
+        }
+        else
         {
             cartList!.Remove(ele);
+            await shoppingCart.DeleteShoppingCart(id);
+
         }
 
     }
@@ -47,20 +251,83 @@
 
     }
 
-    private void AddManuallyQueantity(int id, int quantity)
+    private async Task UpdateQuantity(int id, int newQuantity)
     {
-        var ele = cartList!.First<ShoppingCartDto>(
-            i => i.Product.Id == id
-        );
-        if (quantity >0)
+        var ele = cartList!.First(i => i.Product.Id == id);
+
+        if (newQuantity > 0)
         {
-            ele.Quantity = quantity;
+            ele.Quantity = newQuantity;
             ele.Total = ele.Quantity * ele.Price;
-        }else
+            await shoppingCart.AddShoppingCart(ele);
+        }
+        else
         {
             cartList!.Remove(ele);
+            await shoppingCart.DeleteShoppingCart(id);
         }
-    
+    }
+
+    private async Task DeleteItem(int id)
+    {
+        var ele = cartList!.First<ShoppingCartDto>(i => i.Product.Id == id);
+
+        cartList!.Remove(ele);
+        await shoppingCart.DeleteShoppingCart(id);
+
+    }
+
+    private async Task ProcessPay()
+    {
+        if (!cartList!.Any())
+        {
+            await Swal.FireAsync(
+                    "Info",
+                    $"Not items found",
+                    SweetAlertIcon.Warning
+            );
+            return;
+        }
+
+        var saleDetailDto = cartList!.Select(
+            Item => new SaleDetailDto(
+                Item.Product.Id
+                , Item.Quantity
+                , Item.Price
+                , Item.Total
+            )
+        ).ToList();
+
+        var request = new SaleDto(
+            1
+            , cartList!.Sum(i => i.Total)
+            , saleDetailDto
+        );
+
+        try
+        {
+            var res = await httpClient.PostAsJsonAsync("api/sales", request);
+            res.EnsureSuccessStatusCode();
+
+            await shoppingCart.CleanShoppingCart();
+            await Swal.FireAsync(
+                    "Info",
+                    $"Your purchase was successful",
+                    SweetAlertIcon.Success
+            );
+            navigationManager.NavigateTo("/");
+
+        }
+        catch (Exception e)
+        {
+            await Swal.FireAsync(
+                    "Info",
+                    $"{e.Message}",
+                    SweetAlertIcon.Error
+            );
+        }
+
+
     }
 
 }
