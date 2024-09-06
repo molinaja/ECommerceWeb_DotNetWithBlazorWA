@@ -1,4 +1,6 @@
 # ECommerceWeb
+Juan ANdres Molina Vargas
+APLICACIONES WEB ASP.NET 8
 
 ##Example of ecommerce site build in Dot Net 8
 
@@ -14,3 +16,4 @@
 3. Change connection string 
 4. cd in the project folder run in you console ==> dotnet ef database update --project .\ECommerceWeb.DataAccess\ --startup-project .\ECommerceweb.WebApi
 5. run in your console dotnet watch run
+6. Ensure the folder wwwroot was created in  webapi, for upload images of products 
