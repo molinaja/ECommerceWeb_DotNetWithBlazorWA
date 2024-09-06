@@ -6,7 +6,7 @@
 @inject SweetAlertService Swal
 @inject IToastService toastService
 @inject BlazorSpinner.LoadingService _loadingService
-
+@inject IShoppingCartProxy ShoppingCart
 
 <BannerPrincipal />
 
@@ -134,9 +134,13 @@
                                     <h3 class="secondary-font text-primary">$@item.Price</h3>
 
                                     <div class="d-flex flex-wrap mt-3">
-                                        <a href="#" class="btn-cart me-3 px-4 pt-3 pb-3">
+                                        @* <a href="#" class="btn-cart me-3 px-4 pt-3 pb-3">
                                             <h5 class="text-uppercase m-0">Add to Cart</h5>
-                                        </a>
+                                        </a> *@
+                                        <button class ="btn-cart me-3 px-4 pt-3 pb-3"
+                                                @onclick="() => AddShoppingCart(item.Id)">
+                                            ADD TO CART
+                                        </button>
                                         <a href="#" class="btn-wishlist px-4 pt-3 ">
                                             <iconify-icon icon="fluent:heart-28-filled" class="fs-5"></iconify-icon>
                                         </a>
@@ -282,6 +286,28 @@
     {
 
         await JS.InvokeVoidAsync("changeTab", "nav-sign-in-tab", "nav-register-tab");
+    }
+
+    private async Task AddShoppingCart(int idProduct)
+    {
+        ProductDtoResponse productFind = Products.First(ele => ele.Id == idProduct);
+        if (productFind != null)
+        {
+            ShoppingCartDto Cart = new ShoppingCartDto()
+                {
+                    Product = productFind!
+                            ,
+                    Quantity = 1
+                            ,
+                    Price = productFind.Price
+                            ,
+                    Total = 1 * productFind.Price
+
+                };
+
+            await ShoppingCart.AddShoppingCart(Cart);
+        }
+
     }
 
 
