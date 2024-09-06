@@ -1,6 +1,7 @@
 ﻿using ECommerceWeb.Dto.Request;
 using ECommerceWeb.Dto.Response;
 using ECommerceWeb.Entities;
+using ECommerceWeb.Repositories.Implementaciones;
 using ECommerceWeb.Repositories.Interfaces;
 using ECommerceWeb.WebApi.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -16,11 +17,13 @@ public class ProductsController : ControllerBase
 {
     private readonly IProductRepository _repository;
     private readonly IFileUploader _fileUploader;
+    private readonly ILogger _logger;
 
-    public ProductsController(IProductRepository repository, IFileUploader fileUploader)
+    public ProductsController(IProductRepository repository, IFileUploader fileUploader, ILogger<ProductRepository> logger)
     {
         _repository = repository;
         _fileUploader = fileUploader;
+        _logger = logger;
     }
 
     [AllowAnonymous]
@@ -115,12 +118,12 @@ public class ProductsController : ControllerBase
 
         if (entity is null)
             return NotFound();
-
+        
         entity.Name = request.Name;
         entity.Price = request.Price;
         entity.CategoryId = request.CategoryId;
         entity.BrandId = request.BrandId;
-
+        _logger.LogInformation($"Aki juan {request.FileName} y {request.UrlImage}");
         if (!string.IsNullOrEmpty(request.Base64Image) && !string.IsNullOrEmpty(request.FileName)) {
 
             entity.UrlImage = await _fileUploader.UploadFileAsync(request.Base64Image, request.FileName);

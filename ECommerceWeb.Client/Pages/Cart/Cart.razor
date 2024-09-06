@@ -108,91 +108,28 @@
                 </div>
 
                 <div id="cart Total" class="col-md-4">
-                    <div class="cart-totals">
-                        <h2 class="pb-4">Cart Total</h2>
-                        <div class="total-price pb-4">
-                            <table cellspacing="0" class="table text-uppercase">
-                                <tbody>
-                                    <tr class="subtotal pt-2 pb-2 border-top border-bottom">
-                                        <th>Subtotal</th>
-                                        <td data-title="Subtotal">
-                                            <span class="price-amount amount text-dark ps-5">
-                                                <bdi>
-                                                    <span class="price-currency-symbol">$</span>
-                                                    @cartList.Sum(Item => Item.Total).ToString("N2")
-                                                </bdi>
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <tr class="order-total pt-2 pb-2 border-bottom">
-                                        <th>IVA</th>
-                                        <td data-title="IVA">
-                                            <span class="price-amount amount text-dark ps-5">
-                                                <bdi>
-                                                    <span class="price-currency-symbol">$</span>0
-                                                </bdi>
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <tr class="order-total pt-2 pb-2 border-bottom">
-                                        <th>Total</th>
-                                        <td data-title="Total">
-                                            <span class="price-amount amount text-dark ps-5">
-                                                <bdi>
-                                                    <span class="price-currency-symbol">$</span>
-                                                    @cartList.Sum(Item => Item.Total).ToString("N2")
-
-                                                </bdi>
-                                            </span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="button-wrap row g-2">
-                            <div class="col-md-6">
-                                <button class="btn btn-dark btn-lg rounded-1 fs-6 p-3 w-100">Update Cart</button>
-                            </div>
-                            <div class="col-md-6">
-                                <button class="btn btn-dark btn-lg rounded-1 fs-6 p-3 w-100">
-                                    Continue To
-                                    Shop
-                                </button>
-                            </div>
-                            <div class="col-md-12">
-                                <a href="checkout.html"
-                                   class="btn btn-primary p-3 text-uppercase rounded-1 w-100">Proceed to checkout</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-        }
-
-        <section class="shopify-cart checkout-wrap">
-            <div class="container py-5 my-5">
-                <EditForm class="form-group">
-                    <div class="row d-flex flex-wrap">
-
+                    <EditForm Model="debitcreditCardDto" OnValidSubmit="ProcessPay" class="form-group">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
                         <div class="row g-md-5">
 
-                            <div class="col-md-8 pe-md-5">
+                            <div class="">
                                 <h2 class="text-dark pb-3">Billing Details</h2>
                                 <div class="billing-details">
 
                                     <label for="fname">Card Name*</label>
-                                    <input type="text" id="fname" name="fname" class="form-control mt-2 mb-4 ps-3">
+                                    <input @bind-value="debitcreditCardDto.name" type="text" id="fname" name="fname" class="form-control mt-2 mb-4 ps-3">
 
                                     <label for="lnumber">Card Number*</label>
-                                    <input type="tel" name="cardNumber" id="lnumber" maxlength="19" class="form-control mt-2 mb-4 ps-3">
+                                    <input @bind-value="debitcreditCardDto.number" autocomplete="off" type=" tel" name="cardNumber" id="lnumber" maxlength="19"
+                                           class="form-control mt-2 mb-4 ps-3">
 
-                                    <label for="cvalidity">Validity*</label>
-                                    <input type="text" id="cvalidity" name="Validity" class="form-control mt-2 mb-4">
-
-                                    <label for="ccvv">CVV*</label>
-                                    <input type="text" id="ccvv" name="ccvv" class="form-control mt-2 mb-4">
+                                    <div class="col-md-5 pe-md-5">
+                                        <label for="cvalidity">Validity*</label>
+                                        <input @bind-value="debitcreditCardDto.ExpireDate" placeholder="MM/YY" type=" text" id="cvalidity" name="Validity" class="form-control mt-2 mb-4">
+                                        <label for="ccvv">CVV*</label>
+                                        <input @bind-value="debitcreditCardDto.Cvv" type=" text" id="ccvv" name="ccvv" class="form-control mt-2 mb-4">
+                                    </div>
 
                                 </div>
 
@@ -200,9 +137,75 @@
 
                         </div>
 
-                    </div>
-                </EditForm>
+                        <div class="cart-totals">
+                            <h2 class="pb-4">Cart Total</h2>
+                            <div class="total-price pb-4">
+                                <table cellspacing="0" class="table text-uppercase">
+                                    <tbody>
+                                        <tr class="subtotal pt-2 pb-2 border-top border-bottom">
+                                            <th>Subtotal</th>
+                                            <td data-title="Subtotal">
+                                                <span class="price-amount amount text-dark ps-5">
+                                                    <bdi>
+                                                        <span class="price-currency-symbol">$</span>
+                                                        @cartList.Sum(Item => Item.Total).ToString("N2")
+                                                    </bdi>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr class="order-total pt-2 pb-2 border-bottom">
+                                            <th>IVA</th>
+                                            <td data-title="IVA">
+                                                <span class="price-amount amount text-dark ps-5">
+                                                    <bdi>
+                                                        <span class="price-currency-symbol">$</span>0
+                                                    </bdi>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr class="order-total pt-2 pb-2 border-bottom">
+                                            <th>Total</th>
+                                            <td data-title="Total">
+                                                <span class="price-amount amount text-dark ps-5">
+                                                    <bdi>
+                                                        <span class="price-currency-symbol">$</span>
+                                                        @cartList.Sum(Item => Item.Total).ToString("N2")
+
+                                                    </bdi>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+
+                            <div class="button-wrap row g-2">
+                                <div class="col-md-6">
+                                    <button class="btn btn-dark btn-lg rounded-1 fs-6 p-3 w-100">Update Cart</button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button class="btn btn-dark btn-lg rounded-1 fs-6 p-3 w-100">
+                                        Continue To
+                                        Shop
+                                    </button>
+                                </div>
+                                <div class="col-md-12">
+                                    <button class="btn btn-primary p-3 text-uppercase rounded-1 w-100" type="submit">Proceed to checkout</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </EditForm>
+
+                </div>
+
             </div>
+
+        }
+
+        <section class="shopify-cart checkout-wrap">
         </section>
 
     </div>
@@ -212,7 +215,7 @@
 
 
     public ICollection<ShoppingCartDto>? cartList { get; set; } = default!;
-    public ShoppingCartDto shoppingCartDto { get; set; } = new();
+    public DebitcreditCardDto debitcreditCardDto { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -299,8 +302,7 @@
         ).ToList();
 
         var request = new SaleDto(
-            1
-            , cartList!.Sum(i => i.Total)
+            cartList!.Sum(i => i.Total)
             , saleDetailDto
         );
 

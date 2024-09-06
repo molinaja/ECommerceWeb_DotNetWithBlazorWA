@@ -7,7 +7,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ECommerceWeb.Dto.Request
 {
-    public class DebitcreditCard
+    public class DebitcreditCardDto
     {
         public string? name { get; set; }
 

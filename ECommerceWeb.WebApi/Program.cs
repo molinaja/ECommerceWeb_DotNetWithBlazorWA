@@ -25,6 +25,7 @@ builder.Services.AddDbContext<EcommerceDbContext>(options =>
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IBrandRepository, BrandRepository>();
+builder.Services.AddTransient<ISalesRepository, SalesRepository>();
 builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
 builder.Services.AddTransient<IFileUploader, FileUploader>();
 

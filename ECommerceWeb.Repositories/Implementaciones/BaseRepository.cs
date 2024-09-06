@@ -41,7 +41,7 @@ namespace ECommerceWeb.Repositories.Implementaciones
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<int> AddAsync(TEntity entity)
+        public virtual async Task<int> AddAsync(TEntity entity)
         {
             await Context.Set<TEntity>().AddAsync(entity); // this line try to add to the collection of the DbSet
             await Context.SaveChangesAsync(); // this confirm the saving the record
