@@ -3,6 +3,8 @@
 
 @inject HttpClient HttpClient
 
+@attribute [Authorize(Roles = Statics.AdministratorRole)]
+
 <div class="row mt-4">
     <div class="col-sm-6 mb-3">
         <div class="card border-5 shadow border-primary p-4">
