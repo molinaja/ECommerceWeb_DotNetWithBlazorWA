@@ -8,6 +8,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ECommerceWeb.Repositories.Implementaciones
 {
@@ -44,7 +45,10 @@ namespace ECommerceWeb.Repositories.Implementaciones
         public async Task<DashBoard> ShowDashBoard()
         {
             var query = Context.Database.SqlQueryRaw<DashBoard>("exec uspDashboard");
-            return await query.FirstAsync();
+
+            var collection = await query.ToListAsync();
+
+            return collection.First();
         }
     }
 }

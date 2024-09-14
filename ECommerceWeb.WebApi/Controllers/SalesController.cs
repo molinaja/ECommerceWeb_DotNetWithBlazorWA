@@ -1,4 +1,5 @@
-﻿using ECommerceWeb.Dto.Request;
+﻿using ECommerceWeb.Dto;
+using ECommerceWeb.Dto.Request;
 using ECommerceWeb.Dto.Response;
 using ECommerceWeb.Entities;
 using ECommerceWeb.Repositories.Interfaces;
@@ -18,37 +19,41 @@ namespace ECommerceWeb.WebApi.Controllers
         private readonly ICustomerRepository _customerRepository = customerRepository;
 
         [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> Post(SaleDto request) {
+        [Authorize(Roles = Statics.ClientRole) ]
+        public async Task<IActionResult> Post(SaleDto request)
+        {
 
             var response = new BaseResponse();
             try
             {
                 var email = HttpContext.User.Claims.First(e => e.Type == ClaimTypes.Email).Value;
                 var client = await _customerRepository.GetCustomerByEmail(email);
-                if (client == null) { 
+                if (client == null)
+                {
                     response.msnError = $"The user with email {email} is not a client";
                     return BadRequest(response);
                 }
-                var sale = new Sale { CustomerId = client.Id };
-                sale.TotalSale = request.Total;
-                sale.SaleDetail = request.SaleDetail.Select( 
-                    p => new SaleDetail() {
+
+                var sale = new Sale
+                {
+                    CustomerId = client.Id,
+                    SaleDate = DateTime.Now,
+                    TotalSale = request.Total,
+                    SaleDetail = request.SaleDetail.Select(p => new SaleDetail()
+                    {
                         ProductId = p.productID,
                         Quantity = p.queantity,
-                        UnitPrice = p.Price, 
-                        Total = p.Total,
-                        Sale = sale
+                        UnitPrice = p.Price,
+                        Total = p.Total
                     }
-                ).ToList();
+                    ).ToList(),
+                };
                 await _salesRepository.CreateTransactionAsync();
-                await _salesRepository.AddAsync( sale );
+                await _salesRepository.AddAsync(sale);
                 await _salesRepository.ConfirmTransactionAsync();
                 _logger.LogInformation("Transaction succesfully");
                 response.success = true;
                 return Ok(response);
-
-
             }
             catch (Exception ex)
             {
@@ -59,5 +64,15 @@ namespace ECommerceWeb.WebApi.Controllers
             }
 
         }
+
+        [HttpGet]
+        //[Authorize(Roles = Statics.AdministratorRole)]
+        public async Task<IActionResult> Get() {
+
+            var res = await _salesRepository.ShowDashBoard();
+            return Ok(res);
+        }
+
+
     }
 }

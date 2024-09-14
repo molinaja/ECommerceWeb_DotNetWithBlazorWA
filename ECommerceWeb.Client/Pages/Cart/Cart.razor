@@ -5,6 +5,8 @@
 @inject NavigationManager navigationManager
 @inject SweetAlertService Swal
 
+@attribute [Authorize(Roles = Statics.ClientRole)]
+
 <section id="cart" class="my-5 py-5">
     <div class="container">
         @if (cartList != null)
